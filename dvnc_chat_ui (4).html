@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DVNC.AI — Sovereign Discovery Instrument</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a1f4e;--navy-mid:#252b66;--navy-soft:#3a4180;
+  --gold:#ff6600;--gold-soft:rgba(255,102,0,.13);
+  --teal:#17b8a6;
+  --bg:#f8f7f4;--white:#ffffff;
+  --line:rgba(26,31,78,.10);--line-med:rgba(26,31,78,.16);
+  --text:#0f1230;--muted:#5a5f7a;
+  --font-d:'Cormorant Garamond',Georgia,serif;
+  --font-b:'Instrument Sans',sans-serif;
+  --font-m:'DM Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(--text);overflow:hidden}
+.shell{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden}
+
+/* NAV */
+.top-nav{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:54px;
+  background:rgba(248,247,244,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  flex-shrink:0;z-index:100;position:relative}
+.nav-brand{display:flex;align-items:center;gap:11px}
+.nav-logo{width:32px;height:32px;border-radius:9px;
+  background:linear-gradient(135deg,rgba(255,102,0,.13),rgba(23,184,166,.09));
+  border:1px solid rgba(26,31,78,.13);display:grid;place-items:center}
+.nav-logo svg{width:16px;height:16px;color:var(--gold)}
+.nav-wm{font-family:var(--font-d);font-size:1.14rem;font-weight:600;letter-spacing:.20em;text-transform:uppercase;color:var(--navy)}
+.nav-tabs{display:flex;gap:2px;background:rgba(26,31,78,.06);border-radius:11px;padding:4px}
+.nav-tab{padding:6px 18px;border-radius:8px;border:none;background:transparent;color:var(--muted);
+  font-family:var(--font-b);font-size:.83rem;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:all .2s}
+.nav-tab.active{background:var(--white);color:var(--navy);box-shadow:0 2px 8px rgba(26,31,78,.09)}
+.nav-status{display:flex;align-items:center;gap:7px;font-size:.77rem;color:var(--muted);font-family:var(--font-m)}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--teal);
+  box-shadow:0 0 0 4px rgba(23,184,166,.13),0 0 9px rgba(23,184,166,.26);
+  animation:sdotP 2.4s ease-in-out infinite}
+@keyframes sdotP{0%,100%{box-shadow:0 0 0 4px rgba(23,184,166,.13),0 0 9px rgba(23,184,166,.26)}
+  50%{box-shadow:0 0 0 7px rgba(23,184,166,.05),0 0 16px rgba(23,184,166,.18)}}
+
+/* TABS */
+.tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tab-panel.active{display:flex}
+
+/* === TAB 1 DISCOVERY === */
+#tab-d{position:relative;background:var(--bg)}
+
+.bgwm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;z-index:0;overflow:hidden}
+.bgwm svg{width:min(700px,88vw);height:auto;opacity:.042}
+
+.chat-area{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;
+  scroll-behavior:smooth;padding-bottom:6px}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
+
+/* Landing */
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100%;padding:40px 20px 20px;text-align:center;gap:26px}
+.landing-title{font-family:var(--font-d);font-size:clamp(2.4rem,5.5vw,4rem);
+  font-weight:400;letter-spacing:.22em;color:var(--navy);line-height:1}
+.landing-tag{font-family:var(--font-d);font-size:clamp(.86rem,1.5vw,1rem);
+  font-weight:300;font-style:italic;color:var(--muted);letter-spacing:.06em}
+.pill-row{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:560px}
+.ex-pill{padding:7px 15px;border:1px solid var(--line-med);border-radius:999px;font-size:.8rem;
+  color:var(--navy-soft);background:rgba(255,255,255,.7);cursor:pointer;transition:all .2s;
+  font-family:var(--font-m);letter-spacing:.02em;backdrop-filter:blur(8px)}
+.ex-pill:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-soft)}
+
+/* Thread */
+.thread{display:flex;flex-direction:column;gap:0;max-width:960px;
+  margin:0 auto;padding:26px 22px 14px;min-height:100%}
+.msg{display:flex;flex-direction:column;gap:5px;animation:msgIn .32s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{align-items:flex-end;margin-bottom:18px}
+.msg-user .bub{background:linear-gradient(135deg,rgba(26,31,78,.92),rgba(42,50,110,.92));
+  color:#fff;padding:13px 17px;border-radius:19px 19px 4px 19px;max-width:70%;
+  font-size:.93rem;line-height:1.6;box-shadow:0 4px 18px rgba(26,31,78,.17)}
+.msg-ts{font-size:.69rem;color:var(--muted);font-family:var(--font-m)}
+.msg-ai{align-items:flex-start;margin-bottom:22px}
+.ai-row{display:flex;gap:11px;max-width:100%;width:100%}
+.ai-av{width:33px;height:33px;border-radius:9px;
+  background:linear-gradient(135deg,rgba(255,102,0,.11),rgba(23,184,166,.09));
+  border:1px solid rgba(26,31,78,.13);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+.ai-av svg{width:15px;height:15px;color:var(--gold)}
+.ai-body{flex:1;min-width:0}
+.ai-name{font-size:.7rem;font-family:var(--font-m);color:var(--muted);
+  letter-spacing:.10em;text-transform:uppercase;margin-bottom:7px}
+
+/* Response card */
+.rcard{background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(26,31,78,.07)}
+.rsec{padding:20px 22px;border-bottom:1px solid var(--line)}
+.rsec:last-child{border-bottom:none}
+.eyebrow{font-family:var(--font-m);font-size:.67rem;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.sec-title{font-family:var(--font-d);font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:12px}
+
+/* CONNECTOME — bigger */
+.c-box{background:linear-gradient(180deg,rgba(248,247,244,.85),rgba(255,255,255,.65));
+  border:1px solid rgba(26,31,78,.07);border-radius:16px;overflow:hidden;width:100%}
+.c-box svg{width:100%;display:block}
+.c-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;
+  font-size:.75rem;color:var(--muted);font-family:var(--font-m)}
+.ldot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+
+/* Hypothesis */
+.hyp-row{display:flex;gap:13px;align-items:flex-start}
+.hyp-icon{width:37px;height:37px;border-radius:11px;background:var(--gold-soft);
+  border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0}
+.hyp-icon svg{width:15px;height:15px;color:var(--gold)}
+.hyp-txt p{font-size:.93rem;line-height:1.65;color:var(--text)}
+.conf{display:inline-flex;align-items:center;gap:5px;margin-top:9px;padding:4px 11px;
+  border-radius:999px;background:rgba(23,184,166,.08);border:1px solid rgba(23,184,166,.19);
+  font-size:.74rem;font-family:var(--font-m);color:#0b6f66}
+
+/* CANDIDATE FLIP CARDS — proper 3D flip on hover/focus */
+.cand-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:12px}
+.cand-card{perspective:1400px;min-height:300px;cursor:pointer;background:none;outline:none}
+.cand-inner{position:relative;width:100%;height:300px;
+  transition:transform .78s cubic-bezier(.2,.7,.1,1);transform-style:preserve-3d}
+.cand-card:hover .cand-inner,
+.cand-card:focus .cand-inner,
+.cand-card:focus-within .cand-inner{transform:rotateY(180deg)}
+.cand-face{position:absolute;inset:0;padding:18px;border-radius:18px;border:1px solid var(--line);
+  background:var(--white);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 24px rgba(26,31,78,.07)}
+.cand-back{transform:rotateY(180deg);
+  background:linear-gradient(135deg,rgba(255,255,255,1),rgba(248,247,244,.98))}
+.cand-top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.cchip{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:#0b6f66;
+  padding:5px 9px;border-radius:999px;background:rgba(23,184,166,.08);
+  border:1px solid rgba(23,184,166,.17);font-family:var(--font-m)}
+.cchip.alt{color:var(--gold);background:rgba(255,102,0,.08);border-color:rgba(255,102,0,.17)}
+.cscore{font-weight:700;color:var(--gold);font-size:.9rem;font-family:var(--font-m)}
+.cand-face h4{font-size:.91rem;line-height:1.35;color:var(--navy);margin:0}
+.cand-face p{font-size:.83rem;line-height:1.58;color:var(--muted);margin:0}
+.cmeta{margin-top:auto;display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);font-family:var(--font-m)}
+.cmeta strong{color:var(--navy)}
+.cflip-hint{font-size:.7rem;font-family:var(--font-m);color:var(--muted);
+  letter-spacing:.07em;text-transform:uppercase;margin-top:2px}
+.cswap-btn{margin-top:auto;align-self:flex-start;padding:9px 13px;border-radius:11px;
+  background:linear-gradient(135deg,rgba(255,102,0,.94),rgba(240,90,12,.94));
+  color:#fff;border:none;font-size:.79rem;cursor:pointer;font-family:var(--font-b);
+  transition:opacity .18s;box-shadow:0 2px 10px rgba(255,102,0,.26)}
+.cswap-btn:hover{opacity:.85}
+
+/* Metrics */
+.metrics-row{display:flex;gap:9px;flex-wrap:wrap}
+.mpill{flex:1;min-width:90px;border:1px solid var(--line);border-radius:13px;
+  padding:10px 13px;text-align:center;background:rgba(248,247,244,.6)}
+.mval{font-family:var(--font-m);font-size:1.15rem;font-weight:500;color:var(--navy);display:block}
+.mlbl{font-size:.68rem;color:var(--muted);font-family:var(--font-m);
+  letter-spacing:.06em;text-transform:uppercase}
+
+/* Experimental Outline */
+.exp-steps{display:flex;flex-direction:column;gap:0}
+.exp-step{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;
+  padding:12px 0;border-bottom:1px solid var(--line)}
+.exp-step:last-child{border-bottom:none;padding-bottom:0}
+.exp-num{width:36px;height:36px;border-radius:11px;background:rgba(255,102,0,.08);
+  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
+  font-weight:700;font-size:.84rem;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
+.exp-copy h5{font-size:.9rem;color:var(--navy);margin:0 0 5px;font-weight:600}
+.exp-copy p{font-size:.83rem;color:var(--muted);line-height:1.6;margin:0}
+.exp-copy em{font-style:italic;color:var(--navy-soft)}
+
+/* AGENT ROUTE SECTION */
+.agent-section-wrap{padding:16px 22px 22px}
+.agent-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;
+  color:var(--muted);font-family:var(--font-m);letter-spacing:.07em;text-transform:uppercase;
+  border:none;background:none;padding:0;user-select:none;transition:color .2s}
+.agent-toggle:hover{color:var(--navy)}
+.atarrow{transition:transform .25s;display:inline-block;font-size:.9rem}
+.agent-grid{display:flex;flex-direction:column;gap:20px;margin-top:16px}
+.agent-row-full{display:grid;grid-template-columns:minmax(260px,300px) 1fr;gap:16px;align-items:stretch}
+.agent-summary-box{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:18px;
+  padding:17px;display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.agent-step-num{width:40px;height:40px;border-radius:12px;background:rgba(255,102,0,.08);
+  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;font-weight:700;
+  font-size:.84rem;color:var(--gold);font-family:var(--font-m)}
+.agent-info-col{display:flex;flex-direction:column}
+.agent-topline{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.agent-topline h4{margin:0;font-size:.94rem;color:var(--navy)}
+.agent-tag-badge{font-size:.66rem;font-family:var(--font-m);text-transform:uppercase;letter-spacing:.12em;color:var(--teal)}
+.agent-info-col p{margin:8px 0 0;color:#252525;font-size:.83rem;line-height:1.6;max-width:30ch}
+
+/* AGENT FLIP CARDS (3 per agent) — fixed height, strict flex layout prevents overflow */
+.agent-cards-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;align-items:stretch}
+.ac-card{perspective:1400px;height:300px;cursor:pointer;background:none;outline:none}
+.ac-inner{position:relative;width:100%;height:300px;
+  transition:transform .72s cubic-bezier(.2,.7,.1,1);transform-style:preserve-3d}
+.ac-card:hover .ac-inner,
+.ac-card:focus .ac-inner,
+.ac-card:focus-within .ac-inner{transform:rotateY(180deg)}
+.ac-face{position:absolute;inset:0;padding:14px 13px;border-radius:17px;border:1px solid var(--line);
+  background:var(--white);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 6px 20px rgba(26,31,78,.06)}
+.ac-back{transform:rotateY(180deg);
+  background:linear-gradient(135deg,rgba(255,255,255,1),rgba(248,247,244,.97))}
+.ac-card.is-active .ac-face{border-color:rgba(255,102,0,.26);
+  box-shadow:0 8px 28px rgba(255,102,0,.10)}
+.ac-top{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-shrink:0}
+.ac-badge{font-size:.63rem;text-transform:uppercase;letter-spacing:.10em;color:#0b6f66;
+  padding:3px 8px;border-radius:999px;background:rgba(23,184,166,.08);
+  border:1px solid rgba(23,184,166,.17);font-family:var(--font-m);white-space:nowrap}
+.ac-badge.alt{color:var(--gold);background:rgba(255,102,0,.08);border-color:rgba(255,102,0,.17)}
+.ac-score{font-weight:700;color:var(--gold);font-size:.86rem;font-family:var(--font-m);flex-shrink:0}
+.ac-face h5{font-size:.84rem;line-height:1.3;color:var(--navy);margin:0;flex-shrink:0}
+.ac-face p.ac-body{font-size:.78rem;line-height:1.5;color:var(--muted);margin:0;
+  flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+.ac-divider{height:1px;background:var(--line);flex-shrink:0;margin:0 -1px}
+.ac-bottom{flex-shrink:0;display:flex;flex-direction:column;gap:7px;padding-top:8px}
+.ac-meta-row{display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:var(--muted);font-family:var(--font-m)}
+.ac-meta-row strong{color:var(--navy)}
+.ac-status{font-size:.68rem;font-family:var(--font-m);padding:2px 7px;border-radius:999px;
+  background:rgba(23,184,166,.08);border:1px solid rgba(23,184,166,.17);color:#0b6f66;white-space:nowrap}
+.ac-status.on{background:rgba(255,102,0,.10);border-color:rgba(255,102,0,.20);color:var(--gold)}
+.ac-flip-hint{font-size:.66rem;font-family:var(--font-m);color:rgba(90,95,122,.55);
+  text-transform:uppercase;letter-spacing:.07em}
+.ac-btn-row{display:flex;gap:7px;flex-wrap:nowrap}
+.ac-swap-btn{flex:1;padding:8px 10px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(255,102,0,.94),rgba(240,90,12,.94));
+  color:#fff;border:none;font-size:.75rem;cursor:pointer;font-family:var(--font-b);
+  transition:opacity .18s;box-shadow:0 2px 8px rgba(255,102,0,.22);white-space:nowrap}
+.ac-swap-btn:hover{opacity:.86}
+
+/* Thinking */
+.thinking{display:flex;align-items:center;gap:9px;padding:11px 15px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
+  font-size:.83rem;color:var(--muted);font-family:var(--font-m)}
+.tdots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);
+  margin:0 2px;animation:tdot .9s ease-in-out infinite}
+.tdots span:nth-child(2){animation-delay:.15s}.tdots span:nth-child(3){animation-delay:.30s}
+@keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+
+/* Reasoning trace */
+.active-split{display:grid;grid-template-columns:1fr 270px;gap:0;width:100%}
+.trace-panel{border-left:1px solid var(--line);background:rgba(255,255,255,.7);
+  backdrop-filter:blur(8px);padding:16px 14px;overflow-y:auto}
+.trace-hdr{font-family:var(--font-m);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.trace-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:12px;
+  animation:trIn .38s ease}
+@keyframes trIn{from{opacity:0;transform:translateX(7px)}to{opacity:1;transform:translateX(0)}}
+.tn{width:23px;height:23px;border-radius:7px;background:rgba(255,102,0,.09);
+  border:1px solid rgba(255,102,0,.19);font-size:.7rem;font-weight:700;color:var(--gold);
+  display:grid;place-items:center;flex-shrink:0;font-family:var(--font-m)}
+.tt h5{font-size:.8rem;color:var(--navy);margin-bottom:2px}
+.tt p{font-size:.74rem;color:var(--muted);line-height:1.48}
+.trace-step.pend .tn{background:rgba(26,31,78,.05);border-color:var(--line);color:var(--muted)}
+.trace-step.pend .tt h5{color:var(--muted)}
+
+/* CHAT BAR */
+.bar-wrap{flex-shrink:0;padding:13px 22px 17px;background:rgba(248,247,244,.93);
+  backdrop-filter:blur(14px);border-top:1px solid var(--line);position:relative;z-index:10}
+.bar{max-width:960px;margin:0 auto;display:flex;align-items:flex-end;gap:9px;
+  background:var(--white);border:1.5px solid var(--line-med);border-radius:17px;
+  padding:9px 11px 9px 15px;box-shadow:0 4px 18px rgba(26,31,78,.07);
+  transition:border-color .2s,box-shadow .2s}
+.bar:focus-within{border-color:rgba(255,102,0,.33);
+  box-shadow:0 4px 22px rgba(255,102,0,.09),0 0 0 3px rgba(255,102,0,.06)}
+.bar-input{flex:1;border:none;outline:none;background:transparent;font-family:var(--font-b);
+  font-size:.93rem;color:var(--text);resize:none;min-height:24px;max-height:120px;line-height:1.5}
+.bar-input::placeholder{color:var(--muted)}
+.up-btn{width:31px;height:31px;border-radius:9px;border:1px solid var(--line);
+  background:transparent;cursor:pointer;display:grid;place-items:center;
+  color:var(--muted);transition:all .2s;flex-shrink:0}
+.up-btn:hover{border-color:var(--navy-soft);color:var(--navy)}
+.up-btn svg{width:13px;height:13px}
+.mpill-btn{display:flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--line-med);
+  border-radius:999px;background:rgba(26,31,78,.04);cursor:pointer;font-size:.78rem;
+  font-family:var(--font-m);color:var(--navy);transition:all .2s;white-space:nowrap;position:relative}
+.mpill-btn:hover{border-color:var(--gold);background:var(--gold-soft);color:var(--gold)}
+.mchev{width:11px;height:11px;transition:transform .2s}
+.mpill-btn.open .mchev{transform:rotate(180deg)}
+.mdrop{position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);
+  background:var(--white);border:1px solid var(--line-med);border-radius:17px;
+  box-shadow:0 14px 44px rgba(26,31,78,.15);padding:9px;width:295px;
+  display:none;flex-direction:column;gap:5px;z-index:200}
+.mdrop.open{display:flex;animation:dropUp .21s ease}
+@keyframes dropUp{from{opacity:0;transform:translateX(-50%) translateY(7px)}
+  to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.moption{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:11px;cursor:pointer;transition:background .18s}
+.moption:hover,.moption.active{background:rgba(26,31,78,.04)}
+.moption.active{background:var(--gold-soft)}
+.m-icon{width:33px;height:33px;border-radius:9px;background:rgba(26,31,78,.06);
+  border:1px solid var(--line);display:grid;place-items:center;flex-shrink:0}
+.m-icon svg{width:15px;height:15px;color:var(--navy-soft)}
+.moption.active .m-icon{background:rgba(255,102,0,.09);border-color:rgba(255,102,0,.19)}
+.moption.active .m-icon svg{color:var(--gold)}
+.mmeta h5{font-size:.86rem;color:var(--navy);margin-bottom:2px}
+.mmeta .mtag{font-size:.67rem;font-family:var(--font-m);text-transform:uppercase;letter-spacing:.12em;color:var(--gold)}
+.mmeta small{font-size:.74rem;color:var(--muted);line-height:1.38;display:block;margin-top:2px}
+.mchk{margin-left:auto;color:var(--gold);display:none}
+.moption.active .mchk{display:block}
+.send-btn{width:35px;height:35px;border-radius:11px;
+  background:linear-gradient(135deg,rgba(255,102,0,.93),rgba(240,90,12,.93));
+  border:none;cursor:pointer;display:grid;place-items:center;flex-shrink:0;
+  transition:transform .14s,box-shadow .14s;box-shadow:0 2px 9px rgba(255,102,0,.28)}
+.send-btn:hover{transform:scale(1.05);box-shadow:0 4px 14px rgba(255,102,0,.38)}
+.send-btn:active{transform:scale(.96)}
+.send-btn:disabled{opacity:.43;cursor:not-allowed;transform:none}
+.send-btn svg{width:15px;height:15px;color:#fff}
+
+/* === TAB 2 GRAPH === */
+#tab-g{overflow-y:auto;background:var(--bg)}
+#tab-g::-webkit-scrollbar{width:4px}
+#tab-g::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
+.gs{max-width:1380px;margin:0 auto;padding:22px;display:grid;grid-template-columns:370px 1fr;gap:18px;min-height:100%}
+.gp{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:19px}
+.gp h3{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin-bottom:14px}
+.glbl{display:block;font-size:.77rem;font-family:var(--font-m);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.10em;margin-bottom:5px;margin-top:13px}
+.ginput{width:100%;padding:9px 13px;border:1.5px solid var(--line-med);border-radius:11px;
+  font-family:var(--font-b);font-size:.87rem;color:var(--text);background:transparent;
+  outline:none;resize:vertical;min-height:76px;transition:border-color .2s}
+.ginput:focus{border-color:rgba(255,102,0,.33)}
+.gselect{width:100%;padding:8px 12px;border:1.5px solid var(--line-med);border-radius:11px;
+  font-family:var(--font-b);font-size:.87rem;color:var(--text);background:var(--white);
+  outline:none;transition:border-color .2s}
+.gselect:focus{border-color:rgba(255,102,0,.33)}
+.gchks{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.cchk{display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--line-med);
+  border-radius:999px;font-size:.75rem;font-family:var(--font-m);color:var(--navy-soft);
+  cursor:pointer;background:rgba(255,255,255,.8);transition:all .18s;user-select:none}
+.cchk.on{border-color:var(--teal);background:rgba(23,184,166,.08);color:#0b6f66}
+.cchk input{display:none}
+.gbtn-row{display:flex;gap:9px;margin-top:14px}
+.gbtn{flex:1;padding:9px 13px;border-radius:12px;font-family:var(--font-b);
+  font-size:.84rem;cursor:pointer;transition:all .2s;font-weight:500}
+.gbtn.pri{background:linear-gradient(135deg,rgba(255,102,0,.93),rgba(240,90,12,.93));
+  color:#fff;border:none;box-shadow:0 2px 9px rgba(255,102,0,.19)}
+.gbtn.pri:hover{box-shadow:0 4px 14px rgba(255,102,0,.32);transform:translateY(-1px)}
+.gbtn.sec{background:var(--white);color:var(--navy);border:1.5px solid var(--line-med)}
+.gbtn.sec:hover{border-color:var(--navy-soft)}
+.gmain{display:flex;flex-direction:column;gap:14px}
+.gviz{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:17px;flex:1}
+.gviz-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:11px}
+.gviz-hdr h3{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin:0}
+.gleg{display:flex;gap:11px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);font-family:var(--font-m)}
+.gstage{border:1px solid rgba(26,31,78,.06);border-radius:14px;
+  background:linear-gradient(180deg,rgba(248,247,244,.8),rgba(255,255,255,.6));
+  min-height:370px;display:flex;align-items:center;justify-content:center}
+.gempty{text-align:center;max-width:370px;padding:22px}
+.gempty h4{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin-bottom:7px}
+.gempty p{font-size:.86rem;color:var(--muted);line-height:1.58}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.jcard{border:1px solid var(--line);border-radius:14px;padding:13px;display:flex;
+  justify-content:space-between;align-items:center;gap:9px;background:var(--white);
+  text-decoration:none;color:inherit;transition:border-color .18s}
+.jcard:hover{border-color:rgba(26,31,78,.26)}
+.jcard h4{font-size:.88rem;color:var(--navy);margin-bottom:3px}
+.jcard p{font-size:.77rem;color:var(--muted);line-height:1.43;margin:0}
+.jopen{font-size:.74rem;font-family:var(--font-m);color:var(--muted);white-space:nowrap}
+.dropzone{border:1.5px dashed rgba(26,31,78,.17);border-radius:11px;padding:13px;
+  text-align:center;background:rgba(255,255,255,.5);cursor:pointer}
+.dropzone svg{width:20px;height:20px;color:var(--muted);display:block;margin:0 auto 5px}
+.dropzone span{font-size:.79rem;color:var(--muted)}
+
+@media(max-width:1200px){
+  .agent-row-full{grid-template-columns:1fr}
+  .agent-cards-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .cand-grid,.agent-cards-row{grid-template-columns:1fr}
+  .gs{grid-template-columns:1fr}
+  .active-split{grid-template-columns:1fr}
+  .trace-panel{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<nav class="top-nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/>
+        <circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <span class="nav-wm">DVNC.AI</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('d',this)">Discovery Engine</button>
+    <button class="nav-tab" onclick="switchTab('g',this)">Self-Learning Graph</button>
+  </div>
+  <div class="nav-status"><span class="sdot"></span><span>Live orchestration</span></div>
+</nav>
+
+<!-- TAB 1 DISCOVERY -->
+<div id="tab-d" class="tab-panel active">
+  <div class="bgwm">
+    <svg viewBox="0 0 800 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="400" cy="430" r="370" stroke="#1a1f4e" stroke-width="1.2"/>
+      <circle cx="400" cy="430" r="250" stroke="#1a1f4e" stroke-width="1"/>
+      <circle cx="400" cy="430" r="165" stroke="#1a1f4e" stroke-width="1"/>
+      <circle cx="400" cy="430" r="92"  stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="400" y1="60"  x2="400" y2="800" stroke="#1a1f4e" stroke-width=".8"/>
+      <line x1="30"  y1="430" x2="770" y2="430" stroke="#1a1f4e" stroke-width=".8"/>
+      <line x1="140" y1="168" x2="660" y2="692" stroke="#1a1f4e" stroke-width=".7"/>
+      <line x1="660" y1="168" x2="140" y2="692" stroke="#1a1f4e" stroke-width=".7"/>
+      <circle cx="400" cy="282" r="76" fill="#1a1f4e"/>
+      <circle cx="308" cy="436" r="37" fill="#1a1f4e" opacity=".42"/>
+      <circle cx="400" cy="436" r="37" fill="#1a1f4e" opacity=".42"/>
+      <circle cx="492" cy="436" r="37" fill="#1a1f4e" opacity=".42"/>
+      <circle cx="252" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
+      <circle cx="338" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
+      <circle cx="424" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
+      <circle cx="510" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
+      <line x1="400" y1="358" x2="308" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="400" y1="358" x2="400" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="400" y1="358" x2="492" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="308" y1="473" x2="252" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="400" y1="473" x2="338" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="400" y1="473" x2="424" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
+      <line x1="492" y1="473" x2="510" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
+      <circle cx="98"  cy="195" r="5" fill="#1a1f4e"/><circle cx="158" cy="330" r="4" fill="#1a1f4e"/>
+      <circle cx="76"  cy="470" r="4" fill="#1a1f4e"/><circle cx="702" cy="175" r="5" fill="#1a1f4e"/>
+      <circle cx="738" cy="358" r="4" fill="#1a1f4e"/><circle cx="682" cy="502" r="4" fill="#1a1f4e"/>
+      <circle cx="198" cy="682" r="4" fill="#1a1f4e"/><circle cx="602" cy="702" r="5" fill="#1a1f4e"/>
+      <text x="282" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">SYSTEMS THINKING</text>
+      <text x="400" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">CROSS-DOMAIN AI</text>
+      <text x="518" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">POLYMATHIC INTELLIGENCE</text>
+      <text x="252" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">QUANTUM</text>
+      <text x="338" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">NEURAL</text>
+      <text x="424" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">GOLDEN RATIO</text>
+      <text x="510" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">FUTURE AI</text>
+      <path id="tarc" d="M 115,430 A 285,285 0 0,1 685,430" fill="none"/>
+      <text font-family="Cormorant Garamond,serif" font-size="14" fill="#1a1f4e" letter-spacing="2">
+        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
+      </text>
+    </svg>
+  </div>
+  <div class="chat-area" id="chatArea">
+    <div class="landing" id="landingScreen">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:9px">
+        <div class="landing-title">DVNC.AI</div>
+        <div class="landing-tag">Leonardo's Intelligence. Reimagined for the 21st Century.</div>
+      </div>
+      <div class="pill-row">
+        <button class="ex-pill" onclick="fillQ('How could self-assembling conductive biomaterials improve cardiac tissue regeneration?')">Cardiac tissue regeneration</button>
+        <button class="ex-pill" onclick="fillQ('What are potential synthetic lethal targets in KRAS G12D lung cancer?')">KRAS G12D synthetic lethality</button>
+        <button class="ex-pill" onclick="fillQ('Design a validation experiment for piezoelectric scaffold cardiac repair')">Piezoelectric scaffold validation</button>
+        <button class="ex-pill" onclick="fillQ('How can peptide self-assembly guide immune modulation in myocardial infarct?')">Peptide mesh immune modulation</button>
+      </div>
+    </div>
+    <div class="thread" id="thread" style="display:none;flex-direction:column"></div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar">
+      <textarea class="bar-input" id="chatInput" placeholder="Ask DVNC.AI anything…" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="up-btn" title="Upload PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+      <div style="position:relative">
+        <button class="mpill-btn" id="mpBtn" onclick="toggleMDrop()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:11px;height:11px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span id="mpLabel">DVNC Sovereign</span>
+          <svg class="mchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="mdrop" id="mDrop">
+          <div class="moption active" onclick="selModel('DVNC Sovereign')">
+            <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            <div class="mmeta"><h5>DVNC Sovereign</h5><span class="mtag">Flagship</span><small>Maximum depth orchestration for frontier discovery</small></div>
+            <svg class="mchk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="moption" onclick="selModel('DVNC Atlas')">
+            <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div>
+            <div class="mmeta"><h5>DVNC Atlas</h5><span class="mtag">Research</span><small>Balanced reasoning, graph traversal, and synthesis</small></div>
+            <svg class="mchk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="moption" onclick="selModel('DVNC Curie')">
+            <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div>
+            <div class="mmeta"><h5>DVNC Curie</h5><span class="mtag">Lab</span><small>Experimental hypothesis generation for anomalous signals</small></div>
+            <svg class="mchk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="submitQ()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 GRAPH -->
+<div id="tab-g" class="tab-panel">
+  <div class="gs">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="gp">
+        <h3>Research Discovery</h3>
+        <label class="glbl">Research topic / title / DOI / link</label>
+        <textarea class="ginput" placeholder="e.g. self-assembling conductive biomaterials for cardiac repair" rows="3"></textarea>
+        <label class="glbl">Search mode</label>
+        <select class="gselect"><option>topic</option><option>title</option><option>doi</option><option>link</option><option>paper_name</option><option>autonomous_web</option></select>
+        <label class="glbl">Sources</label>
+        <div class="gchks">
+          <label class="cchk on"><input type="checkbox" checked>arxiv</label>
+          <label class="cchk on"><input type="checkbox" checked>openalex</label>
+          <label class="cchk on"><input type="checkbox" checked>crossref</label>
+          <label class="cchk on"><input type="checkbox" checked>semantic_scholar</label>
+          <label class="cchk on"><input type="checkbox" checked>europe_pmc</label>
+        </div>
+        <label class="glbl">Upload PDF</label>
+        <div class="dropzone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Drop PDF here or click to browse</span></div>
+        <div class="gbtn-row"><button class="gbtn pri">Discover Papers</button><button class="gbtn sec">Load Example</button></div>
+        <div style="margin-top:13px;padding:11px 13px;background:rgba(248,247,244,.8);border-radius:11px;border:1px solid var(--line)"><span style="font-size:.77rem;color:var(--muted);font-family:var(--font-m)">No discovery results yet.</span></div>
+      </div>
+      <div class="gp">
+        <h3>Ingest &amp; Parse</h3>
+        <label class="glbl">Select papers to ingest</label>
+        <div style="border:1px solid var(--line);border-radius:11px;padding:11px;background:rgba(248,247,244,.5);font-size:.81rem;color:var(--muted)">Run discovery first to populate candidates.</div>
+        <label class="glbl" style="margin-top:13px">Parser routing order</label>
+        <div class="gchks">
+          <label class="cchk on"><input type="checkbox" checked>grobid</label>
+          <label class="cchk on"><input type="checkbox" checked>docling</label>
+          <label class="cchk on"><input type="checkbox" checked>pymupdf</label>
+        </div>
+        <div class="gbtn-row"><button class="gbtn sec">Parse PDF</button><button class="gbtn pri">Ingest into Graph</button></div>
+      </div>
+    </div>
+    <div class="gmain">
+      <div class="gviz">
+        <div class="gviz-hdr">
+          <div>
+            <p style="font-family:var(--font-m);font-size:.67rem;letter-spacing:.17em;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Learning Graph</p>
+            <h3>Self-Learning Knowledge Graph</h3>
+          </div>
+          <div class="gleg">
+            <span><i class="ldot" style="background:#ffd8b3;border:1px solid #de9e58"></i>query</span>
+            <span><i class="ldot" style="background:#d7f6f2;border:1px solid #4fb3a5"></i>paper</span>
+            <span><i class="ldot" style="background:#e7defe;border:1px solid #8f73d9"></i>uploaded PDF</span>
+          </div>
+        </div>
+        <div class="gstage"><div class="gempty"><h4>No papers mapped yet</h4><p>Search by topic, title, DOI, or link, then select papers before graph ingestion.</p></div></div>
+      </div>
+      <div class="gp">
+        <h3 style="margin-bottom:11px">Journal Quick Search</h3>
+        <div class="jgrid">
+          <a class="jcard" href="https://www.nature.com/search?q=biomaterials" target="_blank"><div><h4>Nature</h4><p>Flagship multidisciplinary research journal.</p></div><span class="jopen">Open →</span></a>
+          <a class="jcard" href="https://www.science.org/search?q=biomaterials" target="_blank"><div><h4>Science</h4><p>High-impact science journal and family.</p></div><span class="jopen">Open →</span></a>
+          <a class="jcard" href="https://www.cell.com/search?q=biomaterials" target="_blank"><div><h4>Cell</h4><p>Life sciences and translational biology.</p></div><span class="jopen">Open →</span></a>
+          <a class="jcard" href="https://www.thelancet.com/search?q=biomaterials" target="_blank"><div><h4>The Lancet</h4><p>Clinical and medical research.</p></div><span class="jopen">Open →</span></a>
+          <a class="jcard" href="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=biomaterials" target="_blank"><div><h4>IEEE Xplore</h4><p>Engineering, AI, signal processing, and systems.</p></div><span class="jopen">Open →</span></a>
+        </div>
+      </div>
+      <div class="gp"><h3>PDF Parse Status</h3><p style="font-size:.85rem;color:var(--muted)">Awaiting upload. Parsed structure will appear here.</p></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// DATA
+const AGENTS=[
+  {step:1,agent:'Query Interpreter',tag:'input',
+   summary:'Normalises the prompt into a graph-searchable seed and isolates the core tension inside the question.',
+   cards:[
+    {key:'mechanistic',title:'Mechanistic decomposition',badge:'input',score:91,novelty:'High clarity',
+     front:'Resolve the prompt into substrate, perturbation, state variable, measurable readout, and timescale.',
+     back:'Swap into route when the question needs hard causal framing before graph expansion.'},
+    {key:'multiscale',title:'Multi-scale framing',badge:'input',score:86,novelty:'Broad scope',
+     front:'Split the problem across molecular, cellular, tissue, and systems levels before branching.',
+     back:'Swap into route when bridge variables across scales matter more than a single mechanism.'},
+    {key:'constraint-led',title:'Constraint-led framing',badge:'input',score:84,novelty:'Practical',
+     front:'Start from assay, delivery, model-system, and validation constraints instead of pure theory.',
+     back:'Swap into route when experimental tractability should dominate from the first step.'},
+  ]},
+  {step:2,agent:'Graph Divergence Mapper',tag:'graph',
+   summary:'Finds remote conceptual bridges instead of staying near the starting domain cluster.',
+   cards:[
+    {key:'local-causal',title:'Local causal neighbourhood',badge:'graph',score:88,novelty:'Stable',
+     front:'Expand first through nearest mechanistic neighbours to preserve interpretability.',
+     back:'Swap into route when you want a conservative branch around known causal structure.'},
+    {key:'cross-scale',title:'Cross-scale bridge mapping',badge:'graph',score:93,novelty:'High novelty',
+     front:'Search for hidden intermediates that convert local events into tissue or system outcomes.',
+     back:'Swap into route when the graph must discover bridge variables across levels.'},
+    {key:'counterfactual',title:'Counterfactual branches',badge:'graph',score:89,novelty:'Adversarial',
+     front:'Generate explicit rival graph routes that could explain the same observed effect.',
+     back:'Swap into route when you want disagreement and adversarial structure early.'},
+  ]},
+  {step:3,agent:'Evidence Harvester',tag:'evidence',
+   summary:'Pulls evidence packets and conflict signals required for grounded hypothesis formation.',
+   cards:[
+    {key:'supportive',title:'Supportive evidence packet',badge:'evidence',score:87,novelty:'Direct',
+     front:'Collect papers that directly strengthen the active route and mechanism stack.',
+     back:'Swap into route when the composer needs the strongest positive case first.'},
+    {key:'contradiction',title:'Contradiction scan',badge:'evidence',score:92,novelty:'Scientist-grade',
+     front:'Prioritise limiting conditions, null findings, and papers that invert the result.',
+     back:'Swap into route when context dependence matters more than consensus.'},
+    {key:'assay-gap',title:'Assay bias scan',badge:'evidence',score:85,novelty:'Methods-aware',
+     front:'Look for missing readouts and weak proxies that may distort the literature signal.',
+     back:'Swap into route when measurement weakness is likely driving false confidence.'},
+  ]},
+  {step:4,agent:'Analogy Engine',tag:'analogy',
+   summary:'Generates cross-domain analogies with a bias toward mechanism transfer over keyword similarity.',
+   cards:[
+    {key:'near-transfer',title:'Near-domain transfer',badge:'analogy',score:86,novelty:'Controlled',
+     front:'Borrow mechanisms from adjacent domains where variables and constraints still align.',
+     back:'Swap into route when novelty should stay close to interpretable biology or materials science.'},
+    {key:'distant-transfer',title:'Distant mechanism transfer',badge:'analogy',score:94,novelty:'Very high',
+     front:'Import remote control logic from another field with conserved dynamics or topology.',
+     back:'Swap into route when you want maximal novelty without relying on keyword similarity.'},
+    {key:'material-analogy',title:'Material behaviour analogy',badge:'analogy',score:90,novelty:'Bridge-heavy',
+     front:'Recast the system through mechanics, conductivity, self-assembly, or feedback material behaviour.',
+     back:'Swap into route when physical behaviour is a stronger bridge than biological naming.'},
+  ]},
+  {step:5,agent:'Hypothesis Composer',tag:'compose',
+   summary:'Composes the lead hypothesis and two structurally different variants.',
+   cards:[
+    {key:'single-lead',title:'Single lead hypothesis',badge:'compose',score:89,novelty:'Focused',
+     front:'Compose one sharp mechanism-led thesis with strong causal sequencing.',
+     back:'Swap into route when the system should commit early to the strongest line of attack.'},
+    {key:'triad',title:'Three-route composition',badge:'compose',score:93,novelty:'Portfolio',
+     front:'Produce a lead hypothesis plus two structurally different alternatives side by side.',
+     back:'Swap into route when route comparison is part of the product experience.'},
+    {key:'claim-evidence',title:'Claim-evidence assembly',badge:'compose',score:91,novelty:'Structured',
+     front:'Bind each major claim to evidence packets, expected signals, and failure modes.',
+     back:'Swap into route when graph-ready structured output matters more than prose elegance.'},
+  ]},
+  {step:6,agent:'Adversarial Critic',tag:'critique',
+   summary:'Attacks weak assumptions, hidden confounders, and feasibility gaps.',
+   cards:[
+    {key:'confounders',title:'Confounder attack',badge:'critique',score:90,novelty:'Critical',
+     front:'Stress test hidden variables, proxy leakage, and spurious causal chains.',
+     back:'Swap into route when false positives and mistaken mechanisms are the main risk.'},
+    {key:'boundary',title:'Boundary-condition attack',badge:'critique',score:92,novelty:'Boundary-aware',
+     front:'Probe dose, timescale, cell type, species, and substrate conditions that may invert the result.',
+     back:'Swap into route when the hypothesis is probably true only in a narrow regime.'},
+    {key:'feasibility',title:'Feasibility attack',badge:'critique',score:87,novelty:'Reality check',
+     front:'Target fabrication, delivery, stability, toxicity, and validation bottlenecks.',
+     back:'Swap into route when the science is elegant but the build path may fail.'},
+  ]},
+  {step:7,agent:'Experimental Program Designer',tag:'experiment',
+   summary:'Produces a staged validation plan with measurable falsification criteria.',
+   cards:[
+    {key:'fast-falsify',title:'Fast falsification plan',badge:'experiment',score:88,novelty:'Lean',
+     front:'Design the smallest decisive experiments that can kill the route quickly.',
+     back:'Swap into route when you want rapid learning with minimal lab spend.'},
+    {key:'staged-program',title:'Staged validation program',badge:'experiment',score:94,novelty:'Complete',
+     front:'Move from mechanistic assay to comparative benchmark to translational test in sequence.',
+     back:'Swap into route when the output should look like a full scientific program.'},
+    {key:'orthogonal',title:'Orthogonal readout design',badge:'experiment',score:91,novelty:'Robust',
+     front:'Use multiple independent readouts so the route does not depend on one proxy measurement.',
+     back:'Swap into route when evidence quality matters more than sheer speed.'},
+  ]},
+];
+
+const CANDIDATES=[
+  {title:'Piezoelectric Scaffold Cascade',badge:'Hypothesis Composer',score:92,novelty:'High',
+   front:'Use mechano-electric scaffolds to convert cardiac strain into micro-current signalling.',
+   back:'Discovery path: anomalous healing signal → piezoelectric analog → ion-channel entrainment → tissue regeneration. Risk: power density and fibrosis coupling.'},
+  {title:'Peptide Self-Assembly Mesh',badge:'Analogy Engine',score:88,novelty:'High',
+   front:'Deploy dynamic peptide meshes that self-assemble around damaged myocardium and guide repair.',
+   back:'Discovery path: self-assembly → local immune choreography → regenerative substrate formation. Risk: degradation timing and targeting specificity.'},
+  {title:'Immune-Tuned Conductive Hydrogel',badge:'Adversarial Critic',score:85,novelty:'Medium-High',
+   front:'Blend conductivity with macrophage-state modulation to reduce scarring and restore conduction.',
+   back:'Discovery path: inflammation mismatch → conductive medium → macrophage polarization → synchronized healing. Risk: persistence and biocompatibility.'},
+];
+
+const NODES=[
+  {id:'seed',   label:'Seed Query',           x:10, y:0  },
+  {id:'bio',    label:'Biomaterials',          x:24, y:14 },
+  {id:'card',   label:'Cardiac Repair',        x:38, y:4  },
+  {id:'nano',   label:'Nanostructure',         x:24, y:-20},
+  {id:'selfasm',label:'Self-Assembly',         x:40, y:-17},
+  {id:'electro',label:'Electro-signalling',    x:58, y:11 },
+  {id:'immune', label:'Immune Modulation',     x:64, y:-9 },
+  {id:'trial',  label:'Validation Path',       x:80, y:0  },
+  {id:'alt1',   label:'Piezoelectric Scaffold',x:56, y:28 },
+  {id:'alt2',   label:'Peptide Mesh',          x:54, y:-30},
+];
+const EDGES=[['seed','bio'],['seed','nano'],['bio','card'],['nano','selfasm'],
+  ['selfasm','electro'],['card','immune'],['electro','trial'],['immune','trial'],
+  ['card','alt1'],['selfasm','alt2'],['alt1','trial'],['alt2','trial']];
+
+// STATE
+let curModel='DVNC Sovereign', busy=false;
+
+// TABS
+function switchTab(id,btn){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// MODEL
+function toggleMDrop(){document.getElementById('mDrop').classList.toggle('open');document.getElementById('mpBtn').classList.toggle('open')}
+function selModel(n){
+  curModel=n;document.getElementById('mpLabel').textContent=n;
+  document.querySelectorAll('.moption').forEach(o=>o.classList.toggle('active',o.querySelector('h5').textContent===n));
+  document.getElementById('mDrop').classList.remove('open');document.getElementById('mpBtn').classList.remove('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.mpill-btn')&&!e.target.closest('.mdrop')){
+    document.getElementById('mDrop').classList.remove('open');document.getElementById('mpBtn').classList.remove('open');
+  }
+});
+
+// INPUT
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitQ()}}
+function fillQ(t){const i=document.getElementById('chatInput');i.value=t;autoResize(i);i.focus()}
+
+// UTILS
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+function scrollC(){const a=document.getElementById('chatArea');if(a)a.scrollTop=a.scrollHeight}
+function aiAv(){return`<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`}
+
+// SUBMIT
+async function submitQ(){
+  if(busy)return;
+  const inp=document.getElementById('chatInput');
+  const q=inp.value.trim();if(!q)return;
+  busy=true;inp.value='';inp.style.height='auto';
+  document.getElementById('sendBtn').disabled=true;
+  document.getElementById('landingScreen').style.display='none';
+  const thr=document.getElementById('thread');thr.style.display='flex';
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+  // user bubble
+  const ud=document.createElement('div');ud.className='msg msg-user';
+  ud.innerHTML=`<div class="bub">${esc(q)}</div><span class="msg-ts">${now}</span>`;
+  thr.appendChild(ud);scrollC();
+
+  // thinking bubble
+  const tk=document.createElement('div');tk.className='msg msg-ai';tk.id='tkEl';
+  tk.innerHTML=`<div class="ai-row">${aiAv()}<div class="ai-body"><div class="ai-name">DVNC ${esc(curModel.split(' ')[1]||'Sovereign')}</div>
+    <div class="thinking"><div class="tdots"><span></span><span></span><span></span></div><span>Activating 7-agent discovery stack…</span></div></div></div>`;
+  thr.appendChild(tk);scrollC();
+
+  await runTrace(q);
+}
+
+async function runTrace(q){
+  const thr=document.getElementById('thread');
+  const tkEl=document.getElementById('tkEl');
+  const statusSteps=['Parsing query…','Mapping knowledge graph…','Traversing bridges…',
+    'Harvesting evidence…','Generating analogies…','Composing hypothesis…','Stress-testing…','Finalising…'];
+
+  const trRows=AGENTS.map((a,i)=>`<div class="trace-step pend" id="trs${i}">
+    <div class="tn">${a.step}</div>
+    <div class="tt"><h5>${esc(a.agent)}</h5><p id="trsp${i}"></p></div></div>`).join('');
+
+  const al=document.createElement('div');al.className='msg msg-ai';al.id='actEl';
+  al.innerHTML=`<div class="ai-row" style="width:100%">${aiAv()}
+    <div class="ai-body" style="flex:1">
+      <div class="ai-name">DVNC ${esc(curModel.split(' ')[1]||'Sovereign')} — Reasoning Trace</div>
+      <div class="active-split" style="margin-top:8px">
+        <div style="padding-right:14px">
+          <div class="thinking" id="actStatus">
+            <div class="tdots"><span></span><span></span><span></span></div>
+            <span id="actTxt">Parsing query…</span>
+          </div>
+        </div>
+        <div class="trace-panel"><p class="trace-hdr">Reasoning Trace</p>${trRows}</div>
+      </div>
+    </div></div>`;
+  if(tkEl)tkEl.replaceWith(al);else thr.appendChild(al);scrollC();
+
+  for(let i=0;i<AGENTS.length;i++){
+    await delay(400+i*260);
+    const s=document.getElementById('trs'+i);
+    if(s){s.classList.remove('pend');const sp=document.getElementById('trsp'+i);if(sp)sp.textContent=AGENTS[i].summary;}
+    const tx=document.getElementById('actTxt');if(tx&&statusSteps[i+1])tx.textContent=statusSteps[i+1];
+    scrollC();
+  }
+  await delay(340);
+  renderResp(q);
+}
+
+// CONNECTOME SVG — fully computed to never clip any node or label
+// Node x range: 10–80.  Node y range: -30 (Peptide Mesh) to +28 (Piezoelectric Scaffold).
+// We map x:[10,80] → canvas:[80, 740]  (660px wide, 80px left pad)
+// We map y:[-30,28] → canvas:[80, 380]  (300px tall, 80px top pad)
+// Label clearance: 130px right of rightmost node, 18px above each node
+function buildConn(pids){
+  const act=new Set(pids);
+  const nm={};NODES.forEach(n=>{nm[n.id]=n});
+  const pp=new Set();
+  for(let i=0;i<pids.length-1;i++){pp.add(pids[i]+':'+pids[i+1]);pp.add(pids[i+1]+':'+pids[i])}
+  const xMin=10,xMax=80,yMin=-30,yMax=28;
+  const canW=660,canH=300,padX=80,padY=80;
+  const cx=n=>padX+(n.x-xMin)/(xMax-xMin)*canW;
+  const cy=n=>padY+(n.y-yMin)/(yMax-yMin)*canH;
+  // Total SVG canvas: width=padX+canW+150(label room) = 890, height=padY+canH+padY = 460
+  const svgW=890,svgH=460;
+  let base='',aln='',circ='',lbl='';
+  EDGES.forEach(([a,b])=>{
+    const na=nm[a],nb=nm[b];
+    const x1=cx(na),y1=cy(na),x2=cx(nb),y2=cy(nb);
+    base+=`<line stroke="rgba(26,31,78,.13)" stroke-width="2" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+    if(pp.has(a+':'+b))
+      aln+=`<line stroke="#ff7a1a" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 13"
+        x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"
+        style="animation:pe 1.5s linear infinite;filter:drop-shadow(0 0 7px rgba(255,122,26,.55))"/>`;
+  });
+  NODES.forEach(n=>{
+    const x=cx(n),y=cy(n),isA=act.has(n.id);
+    const r=isA?18:12;
+    const fill=isA?'#ff7a1a':'#b8d8ff';
+    const stroke=isA?'#ffb16d':'#5e8fe6';
+    if(isA){
+      circ+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="34" fill="none" stroke="rgba(255,122,26,.10)" stroke-width="14"/>`;
+      circ+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="25" fill="none" stroke="rgba(255,122,26,.07)" stroke-width="9"/>`;
+    }
+    circ+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2.4"/>`;
+    // Labels to the right of node, except rightmost (trial x:80) goes left
+    const goLeft=n.x>=76;
+    const lx=goLeft?x-24:x+24, ly=y-18, anchor=goLeft?'end':'start';
+    lbl+=`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}"
+      fill="${isA?'#0f1230':'#5a5f7a'}" font-size="12.5"
+      font-weight="${isA?'700':'500'}" font-family="Instrument Sans,sans-serif">${esc(n.label)}</text>`;
+  });
+  return`<svg viewBox="0 0 ${svgW} ${svgH}" style="height:340px;width:100%">
+    <defs><style>@keyframes pe{to{stroke-dashoffset:-44}}</style></defs>
+    ${base}${aln}${circ}${lbl}
+  </svg>`;
+}
+
+// CANDIDATE FLIP CARDS
+function buildCandCards(){
+  return CANDIDATES.map((c,i)=>`
+    <div class="cand-card" tabindex="0">
+      <div class="cand-inner">
+        <div class="cand-face">
+          <div class="cand-top"><span class="cchip">${esc(c.badge)}</span><span class="cscore">${c.score}</span></div>
+          <h4>${esc(c.title)}</h4>
+          <p>${esc(c.front)}</p>
+          <div class="cmeta"><span>Novelty</span><strong>${esc(c.novelty)}</strong></div>
+          <p class="cflip-hint">↕ Hover to reveal discovery path</p>
+        </div>
+        <div class="cand-face cand-back">
+          <div class="cand-top"><span class="cchip alt">Alternative path</span><span class="cscore">${c.score}</span></div>
+          <h4>${esc(c.title)}</h4>
+          <p>${esc(c.back)}</p>
+          <div class="cmeta"><span>Swap into route</span><strong>Enabled</strong></div>
+          <button class="cswap-btn" onclick="event.stopPropagation()">Use as main insight</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// AGENT ROUTE CARDS (7 agents × 3 flip cards each)
+function buildAgentCards(){
+  return AGENTS.map(a=>{
+    const cards=a.cards.map((c,ci)=>`
+      <div class="ac-card ${ci===0?'is-active':''}" tabindex="0">
+        <div class="ac-inner">
+          <div class="ac-face">
+            <div class="ac-top"><span class="ac-badge">${esc(c.badge)}</span><span class="ac-score">${c.score}</span></div>
+            <h5 style="margin-top:8px">${esc(c.title)}</h5>
+            <p class="ac-body" style="margin-top:6px">${esc(c.front)}</p>
+            <div class="ac-divider" style="margin-top:8px"></div>
+            <div class="ac-bottom">
+              <div class="ac-meta-row"><span>Novelty</span><strong>${esc(c.novelty)}</strong></div>
+              <p class="ac-flip-hint">↕ Hover to flip</p>
+            </div>
+          </div>
+          <div class="ac-face ac-back">
+            <div class="ac-top"><span class="ac-badge alt">alt path</span><span class="ac-score">${c.score}</span></div>
+            <h5 style="margin-top:8px">${esc(c.title)}</h5>
+            <p class="ac-body" style="margin-top:6px">${esc(c.back)}</p>
+            <div class="ac-divider" style="margin-top:8px"></div>
+            <div class="ac-bottom">
+              <div class="ac-meta-row">
+                <span>Swap into route</span>
+                <span class="ac-status ${ci===0?'on':''}">${ci===0?'Enabled':'Available'}</span>
+              </div>
+              <div class="ac-btn-row">
+                <button class="ac-swap-btn" onclick="event.stopPropagation()">Swap into route</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`).join('');
+    return`<div class="agent-row-full">
+      <div class="agent-summary-box">
+        <div class="agent-step-num">${a.step}</div>
+        <div class="agent-info-col">
+          <div class="agent-topline"><h4>${esc(a.agent)}</h4><span class="agent-tag-badge">${esc(a.tag)}</span></div>
+          <p>${esc(a.summary)}</p>
+        </div>
+      </div>
+      <div class="agent-cards-row">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+// RENDER FULL RESPONSE
+function renderResp(q){
+  const thr=document.getElementById('thread');
+  const actEl=document.getElementById('actEl');
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const conn=buildConn(['seed','nano','selfasm','electro','trial']);
+  const candH=buildCandCards();
+  const agentH=buildAgentCards();
+
+  const msg=document.createElement('div');msg.className='msg msg-ai';
+  msg.innerHTML=`<div class="ai-row" style="width:100%">${aiAv()}
+    <div class="ai-body" style="flex:1">
+      <div class="ai-name">${esc(curModel)} · <span style="color:var(--teal)">Discovery Complete</span></div>
+      <div class="rcard" style="margin-top:8px">
+
+        <div class="rsec">
+          <p class="eyebrow">Connectome</p>
+          <div class="sec-title">3D Discovery Pathway</div>
+          <div class="c-box">${conn}</div>
+          <div class="c-legend">
+            <span><i class="ldot" style="background:#ff7a1a;box-shadow:0 0 7px rgba(255,122,26,.4)"></i>lit path</span>
+            <span><i class="ldot" style="background:#ff7a1a"></i>chosen node</span>
+            <span><i class="ldot" style="background:#b8d8ff;border:1px solid #5e8fe6"></i>available node</span>
+          </div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Primary Hypothesis</p>
+          <div class="hyp-row">
+            <div class="hyp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+            <div class="hyp-txt">
+              <p>Utilization of a self-assembling conductive scaffold to transduce mechanical strain into localized regenerative signalling pathways, enabling targeted myocardial repair without exogenous electrical stimulation.</p>
+              <span class="conf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:10px;height:10px"><polyline points="20 6 9 17 4 12"/></svg>Confidence 0.78</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Discovery Cards</p>
+          <p style="font-size:.77rem;color:var(--muted);font-family:var(--font-m);margin-bottom:4px">Hover to flip · Back side has "Use as main insight"</p>
+          <div class="cand-grid">${candH}</div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Quantitative Metrics</p>
+          <div class="metrics-row">
+            <div class="mpill"><span class="mval">93</span><span class="mlbl">Novelty</span></div>
+            <div class="mpill"><span class="mval">89</span><span class="mlbl">Mechanistic clarity</span></div>
+            <div class="mpill"><span class="mval">82</span><span class="mlbl">Tractability</span></div>
+            <div class="mpill"><span class="mval">91</span><span class="mlbl">Cross-domain dist.</span></div>
+          </div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Experimental Outline</p>
+          <div class="sec-title" style="margin-bottom:14px">Staged Validation Program</div>
+          <div class="exp-steps">
+            <div class="exp-step">
+              <div class="exp-num">1</div>
+              <div class="exp-copy">
+                <h5>Construct the candidate scaffold</h5>
+                <p>Synthesise candidate piezoelectric biomaterial scaffolds with tunable strain-electric coupling. Characterise conductivity, mechanical compliance, and biocompatibility baseline.</p>
+              </div>
+            </div>
+            <div class="exp-step">
+              <div class="exp-num">2</div>
+              <div class="exp-copy">
+                <h5>In vitro mechanistic validation</h5>
+                <p>Evaluate electromechanical transduction and ion-channel entrainment <em>in vitro</em>. Measure cardiomyocyte alignment, contraction synchrony, and electrical impedance across the scaffold-tissue interface.</p>
+              </div>
+            </div>
+            <div class="exp-step">
+              <div class="exp-num">3</div>
+              <div class="exp-copy">
+                <h5>Comparative in vivo benchmark</h5>
+                <p>Conduct <em>in vivo</em> comparative models against gold-standard substrates. Quantify ejection fraction recovery, scar area reduction, and macrophage polarisation state at 4 and 12 weeks.</p>
+              </div>
+            </div>
+            <div class="exp-step">
+              <div class="exp-num">4</div>
+              <div class="exp-copy">
+                <h5>Adversarial falsification</h5>
+                <p>Rigorously validate to exclude pathological fibrosis coupling and power-density toxicity. Run boundary-condition probes across dose, cell type, and degradation timescale to confirm the regime of efficacy.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-section-wrap">
+          <button class="agent-toggle" onclick="toggleAgents(this)">
+            <span class="atarrow">▾</span>&nbsp;7 Agent Steps — Route Cards (3 per agent)
+          </button>
+          <div id="agGrid" class="agent-grid" style="display:none">${agentH}</div>
+        </div>
+
+      </div>
+      <span class="msg-ts" style="margin-top:5px">${now}</span>
+    </div></div>`;
+
+  if(actEl)actEl.replaceWith(msg);else thr.appendChild(msg);
+  busy=false;document.getElementById('sendBtn').disabled=false;scrollC();
+}
+
+function toggleAgents(btn){
+  const g=document.getElementById('agGrid');
+  const a=btn.querySelector('.atarrow');
+  const open=g.style.display!=='none'&&g.style.display!=='';
+  if(open){g.style.display='none';if(a)a.textContent='▾';}
+  else{g.style.display='flex';g.style.flexDirection='column';g.style.gap='20px';if(a)a.textContent='▴';}
+  setTimeout(()=>scrollC(),50);
+}
+
+// Graph tab check-chips
+document.querySelectorAll('.cchk').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+</script>
+</body>
+</html>
