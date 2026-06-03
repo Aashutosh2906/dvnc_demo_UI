@@ -1,0 +1,12 @@
+{
+  "name": "dvnc-ai",
+  "version": "1.0.0",
+  "description": "DVNC.AI — Leonardo's Intelligence Reimagined",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "groq-sdk": "^0.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
