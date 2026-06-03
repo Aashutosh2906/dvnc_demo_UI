@@ -637,14 +637,14 @@ async function submitQ() {
     apiData = { type: 'simple', text: 'Network error — please check your connection and try again.' };
   }
 
-  const assistantText = apiData.type === 'deep'
+   const assistantText = apiData.type === 'deep'
     ? (apiData.data && apiData.data.synthesis ? apiData.data.synthesis : '')
-    : (apiData.text || '');
+    : (apiData.text || apiData.message || '');
   history.push({ role: 'user', content: q });
   history.push({ role: 'assistant', content: assistantText });
 
   if (apiData.type === 'simple') {
-    renderSimple(apiData.text || 'Something went wrong.');
+    renderSimple(apiData.text || apiData.message || 'Something went wrong.');
   } else {
     await runLensTrace(apiData.data || apiData);
   }
