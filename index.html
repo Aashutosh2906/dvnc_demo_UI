@@ -512,4 +512,408 @@ const LENS_TRACE = [
   { num: '02', name: 'The Analogist',     status: 'Mapping structural isomorphisms across distant domains…' },
   { num: '03', name: 'The Steward',       status: 'Evaluating systemic thresholds and planetary implications…' },
   { num: '04', name: 'The Probabilist',   status: 'Probing determinism vs. probabilistic boundaries…' },
-  { num:
+  { num: '05', name: 'The Dialectician',  status: 'Weighing theory against empirical evidence…' },
+  { num: '06', name: 'The Intuitionist',  status: 'Detecting structural intuitions before calculation…' },
+  { num: '07', name: 'The Respecter',     status: 'Assessing forces, scale thresholds, and redirections…' },
+  { num: '08', name: 'The Collaborator',  status: 'Finding paths that work with natural system logic…' },
+  { num: '09', name: 'The Perceptualist', status: 'Examining perceptual biases and anomalous signals…' },
+  { num: '10', name: 'The Questioner',    status: 'Uncovering unknown unknowns beneath the question…' },
+];
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+// ─── MODEL ────────────────────────────────────────────────────────────────────
+function toggleMDrop() {
+  document.getElementById('mDrop').classList.toggle('open');
+  document.getElementById('mpBtn').classList.toggle('open');
+}
+function selModel(n) {
+  curModel = n;
+  document.getElementById('mpLabel').textContent = n;
+  document.querySelectorAll('.moption').forEach(o =>
+    o.classList.toggle('active', o.querySelector('h5').textContent === n));
+  document.getElementById('mDrop').classList.remove('open');
+  document.getElementById('mpBtn').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.mpill-btn') && !e.target.closest('.mdrop')) {
+    document.getElementById('mDrop').classList.remove('open');
+    document.getElementById('mpBtn').classList.remove('open');
+  }
+});
+
+// ─── INPUT ────────────────────────────────────────────────────────────────────
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitQ(); } }
+function fillQ(t) { const i = document.getElementById('chatInput'); i.value = t; autoResize(i); i.focus(); }
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function scrollC() { const a = document.getElementById('chatArea'); if (a) a.scrollTop = a.scrollHeight; }
+function aiAv() {
+  return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
+}
+function ts() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+
+// ─── MAIN SUBMIT ──────────────────────────────────────────────────────────────
+async function submitQ() {
+  if (busy) return;
+  const inp = document.getElementById('chatInput');
+  const q = inp.value.trim();
+  if (!q) return;
+  busy = true;
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('landingScreen').style.display = 'none';
+  const thr = document.getElementById('thread');
+  thr.style.display = 'flex';
+
+  // User bubble
+  const ud = document.createElement('div');
+  ud.className = 'msg msg-user';
+  ud.innerHTML = `<div class="bub">${esc(q)}</div><span class="msg-ts">${ts()}</span>`;
+  thr.appendChild(ud);
+  scrollC();
+
+  // Thinking indicator
+  const tkEl = document.createElement('div');
+  tkEl.className = 'msg msg-ai';
+  tkEl.id = 'tkEl';
+  tkEl.innerHTML = `<div class="ai-row">${aiAv()}<div class="ai-body">
+    <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')}</div>
+    <div class="thinking"><div class="tdots"><span></span><span></span><span></span></div>
+    <span id="thinkTxt">Thinking…</span></div></div></div>`;
+  thr.appendChild(tkEl);
+  scrollC();
+
+  // Call API
+  let apiData;
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q, history })
+    });
+    apiData = await resp.json();
+  } catch (err) {
+    apiData = { type: 'simple', message: 'Network error — please check your connection and try again.' };
+  }
+
+  // Update history
+  const assistantText = apiData.type === 'deep' ? apiData.synthesis : apiData.message;
+  history.push({ role: 'user', content: q });
+  history.push({ role: 'assistant', content: assistantText || '' });
+
+  if (apiData.type === 'simple') {
+    renderSimple(apiData.message || 'Something went wrong.');
+  } else {
+    await runLensTrace(apiData);
+  }
+}
+
+// ─── SIMPLE RESPONSE ─────────────────────────────────────────────────────────
+function renderSimple(text) {
+  const thr = document.getElementById('thread');
+  const tkEl = document.getElementById('tkEl');
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-ai';
+  msg.innerHTML = `<div class="ai-row">${aiAv()}<div class="ai-body">
+    <div class="ai-name">${esc(curModel)}</div>
+    <div class="simple-bub">${esc(text)}</div>
+    <span class="msg-ts" style="margin-top:4px">${ts()}</span>
+  </div></div>`;
+  if (tkEl) tkEl.replaceWith(msg); else thr.appendChild(msg);
+  busy = false;
+  document.getElementById('sendBtn').disabled = false;
+  scrollC();
+}
+
+// ─── LENS TRACE ANIMATION (deep responses) ───────────────────────────────────
+async function runLensTrace(apiData) {
+  const thr = document.getElementById('thread');
+  const tkEl = document.getElementById('tkEl');
+
+  const trRows = LENS_TRACE.map((l, i) =>
+    `<div class="trace-step pend" id="trs${i}">
+      <div class="tn">${esc(l.num)}</div>
+      <div class="tt"><h5>${esc(l.name)}</h5><p id="trsp${i}">${esc(l.status)}</p></div>
+    </div>`
+  ).join('');
+
+  const traceEl = document.createElement('div');
+  traceEl.className = 'msg msg-ai';
+  traceEl.id = 'actEl';
+  traceEl.innerHTML = `<div class="ai-row" style="width:100%">${aiAv()}
+    <div class="ai-body" style="flex:1">
+      <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')} — Activating 10 Cognitive Lenses</div>
+      <div class="active-split" style="margin-top:8px">
+        <div style="padding-right:14px">
+          <div class="thinking" id="actStatus">
+            <div class="tdots"><span></span><span></span><span></span></div>
+            <span id="actTxt">Activating 10 cognitive lenses…</span>
+          </div>
+        </div>
+        <div class="trace-panel"><p class="trace-hdr">Cognitive Lens Activation</p>${trRows}</div>
+      </div>
+    </div></div>`;
+
+  if (tkEl) tkEl.replaceWith(traceEl); else thr.appendChild(traceEl);
+  scrollC();
+
+  // Animate each lens step using real contribution data from API
+  const lenses = apiData.lenses || [];
+  for (let i = 0; i < LENS_TRACE.length; i++) {
+    await delay(220 + i * 180);
+    const s = document.getElementById('trs' + i);
+    if (s) {
+      s.classList.remove('pend');
+      const sp = document.getElementById('trsp' + i);
+      if (sp && lenses[i] && lenses[i].contribution) {
+        // Show first sentence of real contribution
+        const firstSentence = lenses[i].contribution.split(/[.!?]/)[0].trim();
+        sp.textContent = firstSentence + '.';
+      }
+    }
+    const tx = document.getElementById('actTxt');
+    if (tx && LENS_TRACE[i + 1]) tx.textContent = LENS_TRACE[i + 1].name + ' active…';
+    scrollC();
+  }
+
+  await delay(300);
+  renderDeep(apiData);
+}
+
+// ─── DEEP RESPONSE RENDER ─────────────────────────────────────────────────────
+function renderDeep(data) {
+  const thr = document.getElementById('thread');
+  const actEl = document.getElementById('actEl');
+
+  const graphSVG = buildDynamicGraph(data.graph?.nodes || [], data.graph?.edges || []);
+  const synthHTML = renderSynthesis(data.synthesis || '');
+  const lensesHTML = buildLensCards(data.lenses || []);
+  const metricsHTML = buildMetrics(data.metrics || {});
+  const expHTML = buildExpOutline(data.experimental_outline || []);
+
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-ai';
+  msg.innerHTML = `<div class="ai-row" style="width:100%">${aiAv()}
+    <div class="ai-body" style="flex:1">
+      <div class="ai-name">${esc(curModel)} · <span style="color:var(--teal)">Discovery Complete</span></div>
+      <div class="rcard" style="margin-top:8px">
+
+        <div class="rsec">
+          <p class="eyebrow">Interdisciplinary Knowledge Graph</p>
+          <div class="sec-title" style="margin-bottom:12px">Discovery Connectome</div>
+          <div class="c-box">${graphSVG}</div>
+          <div class="c-legend" style="margin-top:10px">
+            <span><i class="ldot" style="background:#ff7a1a;border:1px solid #e06010"></i>Hypothesis</span>
+            <span><i class="ldot" style="background:#17b8a6;border:1px solid #0e9188"></i>Domain</span>
+            <span><i class="ldot" style="background:#b8d8ff;border:1px solid #5e8fe6"></i>Concept</span>
+            <span><i class="ldot" style="background:#e7defe;border:1px solid #8f73d9"></i>Analogy</span>
+          </div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Leonardian Synthesis</p>
+          <div class="synthesis-block">
+            <div style="display:flex;gap:13px;align-items:flex-start">
+              <div style="width:37px;height:37px;border-radius:11px;background:var(--gold-soft);border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0;margin-top:3px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:15px;height:15px;color:var(--gold)"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+              </div>
+              <div class="synthesis-text">${synthHTML}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rsec">
+          <p class="eyebrow">Discovery Metrics</p>
+          <div class="metrics-row">${metricsHTML}</div>
+        </div>
+
+        ${expHTML ? `<div class="rsec">
+          <p class="eyebrow">Experimental Outline</p>
+          <div class="exp-steps">${expHTML}</div>
+        </div>` : ''}
+
+        <div class="lens-section">
+          <button class="lens-toggle" onclick="toggleLenses(this)">
+            <span class="latarrow">▾</span>&nbsp;10 Cognitive Lenses — What each lens contributed
+          </button>
+          <div id="lensGrid" class="lens-grid" style="display:none">${lensesHTML}</div>
+        </div>
+
+      </div>
+      <span class="msg-ts" style="margin-top:5px">${ts()}</span>
+    </div></div>`;
+
+  if (actEl) actEl.replaceWith(msg); else thr.appendChild(msg);
+  busy = false;
+  document.getElementById('sendBtn').disabled = false;
+  scrollC();
+}
+
+// ─── SYNTHESIS TEXT ───────────────────────────────────────────────────────────
+function renderSynthesis(text) {
+  return text.split(/\n\n+/).filter(p => p.trim())
+    .map(p => `<p>${esc(p.trim())}</p>`).join('');
+}
+
+// ─── METRICS ─────────────────────────────────────────────────────────────────
+function buildMetrics(m) {
+  const items = [
+    { val: m.novelty ?? '—',              lbl: 'Novelty' },
+    { val: m.mechanistic_clarity ?? '—',  lbl: 'Mechanistic clarity' },
+    { val: m.tractability ?? '—',         lbl: 'Tractability' },
+    { val: m.cross_domain_distance ?? '—',lbl: 'Cross-domain dist.' },
+  ];
+  return items.map(i =>
+    `<div class="mpill"><span class="mval">${esc(String(i.val))}</span><span class="mlbl">${esc(i.lbl)}</span></div>`
+  ).join('');
+}
+
+// ─── EXPERIMENTAL OUTLINE ─────────────────────────────────────────────────────
+function buildExpOutline(steps) {
+  if (!steps || steps.length === 0) return '';
+  return steps.map(s =>
+    `<div class="exp-step">
+      <div class="exp-num">${esc(String(s.step))}</div>
+      <div class="exp-copy">
+        <h5>${esc(s.title || '')}</h5>
+        <p>${esc(s.detail || '')}</p>
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ─── LENS ACCORDION CARDS ─────────────────────────────────────────────────────
+function buildLensCards(lenses) {
+  if (!lenses.length) return '<p style="font-size:.83rem;color:var(--muted);padding:8px 0">No lens data available.</p>';
+  return lenses.map(l => {
+    const preview = (l.contribution || '').substring(0, 55) + ((l.contribution || '').length > 55 ? '…' : '');
+    return `<div class="lens-card" id="lc${l.id}">
+      <div class="lens-header" onclick="toggleLens(${l.id})">
+        <div class="lens-num">${String(l.id).padStart(2,'0')}</div>
+        <div class="lens-title-col">
+          <span class="lens-name">${esc(l.name || '')}</span>
+          <span class="lens-preview">${esc(preview)}</span>
+        </div>
+        <span class="lens-chev">▾</span>
+      </div>
+      <div class="lens-body">${esc(l.contribution || '')}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleLens(id) {
+  const card = document.getElementById('lc' + id);
+  if (card) card.classList.toggle('open');
+}
+
+function toggleLenses(btn) {
+  const g = document.getElementById('lensGrid');
+  const a = btn.querySelector('.latarrow');
+  const open = g.style.display !== 'none' && g.style.display !== '';
+  g.style.display = open ? 'none' : 'grid';
+  if (a) a.textContent = open ? '▾' : '▴';
+  setTimeout(() => scrollC(), 50);
+}
+
+// ─── DYNAMIC KNOWLEDGE GRAPH ──────────────────────────────────────────────────
+function buildDynamicGraph(nodes, edges) {
+  if (!nodes || nodes.length === 0) {
+    return `<svg viewBox="0 0 760 200" style="width:100%;height:120px">
+      <text x="380" y="100" text-anchor="middle" font-family="Instrument Sans,sans-serif"
+        font-size="13" fill="#5a5f7a">Graph data not available for this query.</text></svg>`;
+  }
+
+  const svgW = 900, svgH = 420;
+  const cx = 450, cy = 210;
+
+  // Radial layout: hypothesis → center, domain → inner ring, concept → mid, analogy → outer
+  const ringR = { hypothesis: 0, domain: 95, concept: 178, analogy: 248 };
+  const defaultR = 178;
+
+  const byType = {};
+  nodes.forEach(n => {
+    const t = n.type || 'concept';
+    if (!byType[t]) byType[t] = [];
+    byType[t].push(n);
+  });
+
+  const positioned = [];
+  Object.entries(byType).forEach(([type, tNodes]) => {
+    const r = ringR[type] !== undefined ? ringR[type] : defaultR;
+    tNodes.forEach((node, i) => {
+      const angle = r === 0 ? -Math.PI / 2 : (2 * Math.PI * i / tNodes.length) - Math.PI / 2;
+      positioned.push({ ...node, px: cx + r * Math.cos(angle), py: cy + r * Math.sin(angle) });
+    });
+  });
+
+  const nodeMap = {};
+  positioned.forEach(n => { nodeMap[n.id] = n; });
+
+  const typeColors = {
+    hypothesis: { fill: '#ff7a1a', stroke: '#e06010', textFill: '#0f1230', r: 20 },
+    domain:     { fill: '#17b8a6', stroke: '#0e9188', textFill: '#0f1230', r: 14 },
+    concept:    { fill: '#b8d8ff', stroke: '#5e8fe6', textFill: '#3a4180', r: 12 },
+    analogy:    { fill: '#e7defe', stroke: '#8f73d9', textFill: '#4a3880', r: 12 },
+  };
+
+  let edgeSVG = '';
+  (edges || []).forEach(e => {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    if (!a || !b) return;
+    edgeSVG += `<line x1="${a.px.toFixed(1)}" y1="${a.py.toFixed(1)}" x2="${b.px.toFixed(1)}" y2="${b.py.toFixed(1)}"
+      stroke="rgba(26,31,78,.14)" stroke-width="1.6"/>`;
+  });
+
+  let nodeSVG = '';
+  positioned.forEach(n => {
+    const c = typeColors[n.type] || typeColors.concept;
+    const isHyp = n.type === 'hypothesis';
+    if (isHyp) {
+      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="36" fill="none" stroke="rgba(255,122,26,.09)" stroke-width="14"/>`;
+      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="27" fill="none" stroke="rgba(255,122,26,.07)" stroke-width="9"/>`;
+    }
+    nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="${c.r}" fill="${c.fill}" stroke="${c.stroke}" stroke-width="2"/>`;
+
+    // Smart label placement
+    const dx = n.px - cx, dy = n.py - cy;
+    const off = c.r + 8;
+    let lx, ly, anchor;
+    if (Math.abs(dx) >= Math.abs(dy) * 0.6) {
+      lx = n.px + (dx >= 0 ? off : -off);
+      ly = n.py + 4;
+      anchor = dx >= 0 ? 'start' : 'end';
+    } else {
+      lx = n.px;
+      ly = n.py + (dy >= 0 ? off + 10 : -off - 2);
+      anchor = 'middle';
+    }
+    const label = (n.label || '').length > 20 ? n.label.substring(0, 18) + '…' : n.label;
+    nodeSVG += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}"
+      fill="${c.textFill}" font-size="${isHyp ? 13 : 11.5}"
+      font-weight="${isHyp ? '700' : '500'}"
+      font-family="Instrument Sans,sans-serif">${esc(label)}</text>`;
+  });
+
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%;height:340px">
+    ${edgeSVG}${nodeSVG}
+  </svg>`;
+}
+
+// ─── GRAPH TAB CHECKBOXES ─────────────────────────────────────────────────────
+document.querySelectorAll('.cchk').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+</script>
+</body>
+</html>
