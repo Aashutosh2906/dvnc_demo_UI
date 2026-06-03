@@ -50,11 +50,9 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 
 /* === TAB 1 DISCOVERY === */
 #tab-d{position:relative;background:var(--bg)}
-
 .bgwm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   pointer-events:none;z-index:0;overflow:hidden}
 .bgwm svg{width:min(700px,88vw);height:auto;opacity:.042}
-
 .chat-area{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;
   scroll-behavior:smooth;padding-bottom:6px}
 .chat-area::-webkit-scrollbar{width:4px}
@@ -95,8 +93,14 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 
 /* Simple response bubble */
 .simple-bub{background:var(--white);border:1px solid var(--line);border-radius:0 18px 18px 18px;
-  padding:14px 18px;font-size:.93rem;line-height:1.68;color:var(--text);
+  padding:15px 18px;font-size:.93rem;line-height:1.7;color:var(--text);
   box-shadow:0 4px 16px rgba(26,31,78,.06);max-width:88%}
+.simple-bub p{margin-bottom:10px}
+.simple-bub p:last-child{margin-bottom:0}
+.simple-bub ul{padding-left:20px;margin:6px 0}
+.simple-bub li{margin-bottom:4px}
+.simple-bub strong{color:var(--navy);font-weight:600}
+.simple-bub em{font-style:italic;color:var(--navy-soft)}
 
 /* Response card */
 .rcard{background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden;
@@ -107,7 +111,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   text-transform:uppercase;color:var(--gold);margin-bottom:6px}
 .sec-title{font-family:var(--font-d);font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:12px}
 
-/* CONNECTOME */
+/* Knowledge Graph */
 .c-box{background:linear-gradient(180deg,rgba(248,247,244,.85),rgba(255,255,255,.65));
   border:1px solid rgba(26,31,78,.07);border-radius:16px;overflow:hidden;width:100%}
 .c-box svg{width:100%;display:block}
@@ -115,14 +119,18 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   font-size:.75rem;color:var(--muted);font-family:var(--font-m)}
 .ldot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
 
-/* Synthesis text */
-.synthesis-block{padding:4px 0}
-.synthesis-text{font-size:.93rem;line-height:1.72;color:var(--text)}
-.synthesis-text p{margin-bottom:13px}
-.synthesis-text p:last-child{margin-bottom:0}
-.conf{display:inline-flex;align-items:center;gap:5px;margin-top:9px;padding:4px 11px;
-  border-radius:999px;background:rgba(23,184,166,.08);border:1px solid rgba(23,184,166,.19);
-  font-size:.74rem;font-family:var(--font-m);color:#0b6f66}
+/* Synthesis */
+.synthesis-wrap{display:flex;gap:13px;align-items:flex-start}
+.synth-icon{width:37px;height:37px;border-radius:11px;background:var(--gold-soft);
+  border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0;margin-top:3px}
+.synth-icon svg{width:15px;height:15px;color:var(--gold)}
+.synth-text{font-size:.93rem;line-height:1.72;color:var(--text);flex:1}
+.synth-text p{margin-bottom:13px}
+.synth-text p:last-child{margin-bottom:0}
+.synth-text strong{color:var(--navy);font-weight:600}
+.synth-text em{font-style:italic;color:var(--navy-soft)}
+.synth-text ul{padding-left:20px;margin:6px 0 10px}
+.synth-text li{margin-bottom:5px}
 
 /* Metrics */
 .metrics-row{display:flex;gap:9px;flex-wrap:wrap}
@@ -131,32 +139,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .mval{font-family:var(--font-m);font-size:1.15rem;font-weight:500;color:var(--navy);display:block}
 .mlbl{font-size:.68rem;color:var(--muted);font-family:var(--font-m);
   letter-spacing:.06em;text-transform:uppercase}
-
-/* === 10 COGNITIVE LENSES ACCORDION === */
-.lens-section{padding:18px 22px 22px}
-.lens-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;
-  color:var(--muted);font-family:var(--font-m);letter-spacing:.07em;text-transform:uppercase;
-  border:none;background:none;padding:0;user-select:none;transition:color .2s}
-.lens-toggle:hover{color:var(--navy)}
-.latarrow{transition:transform .25s;display:inline-block;font-size:.9rem}
-.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.lens-card{border:1px solid var(--line);border-radius:14px;background:var(--white);
-  overflow:hidden;transition:border-color .2s,box-shadow .2s}
-.lens-card:hover{border-color:rgba(255,102,0,.18)}
-.lens-card.open{border-color:rgba(255,102,0,.28);box-shadow:0 4px 16px rgba(255,102,0,.07)}
-.lens-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
-.lens-num{width:28px;height:28px;border-radius:8px;background:rgba(255,102,0,.08);
-  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
-  font-size:.7rem;font-weight:700;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
-.lens-title-col{flex:1;min-width:0}
-.lens-name{font-size:.86rem;font-weight:600;color:var(--navy);display:block}
-.lens-preview{font-size:.73rem;color:var(--muted);font-family:var(--font-m);
-  display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.lens-chev{color:var(--muted);transition:transform .22s;font-size:.75rem;flex-shrink:0}
-.lens-card.open .lens-chev{transform:rotate(180deg);color:var(--gold)}
-.lens-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line);
-  font-size:.84rem;line-height:1.65;color:var(--text);padding-top:12px}
-.lens-card.open .lens-body{display:block}
 
 /* Experimental Outline */
 .exp-steps{display:flex;flex-direction:column;gap:0}
@@ -169,6 +151,32 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .exp-copy h5{font-size:.9rem;color:var(--navy);margin:0 0 5px;font-weight:600}
 .exp-copy p{font-size:.83rem;color:var(--muted);line-height:1.6;margin:0}
 
+/* 10 Cognitive Lenses */
+.lens-section{padding:18px 22px 22px}
+.lens-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;
+  color:var(--muted);font-family:var(--font-m);letter-spacing:.07em;text-transform:uppercase;
+  border:none;background:none;padding:0;user-select:none;transition:color .2s}
+.lens-toggle:hover{color:var(--navy)}
+.latarrow{transition:transform .25s;display:inline-block;font-size:.9rem}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.lens-card{border:1px solid var(--line);border-radius:14px;background:var(--white);
+  overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.lens-card:hover{border-color:rgba(255,102,0,.18)}
+.lens-card.open{border-color:rgba(255,102,0,.30);box-shadow:0 4px 16px rgba(255,102,0,.07)}
+.lens-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.lens-num{width:28px;height:28px;border-radius:8px;background:rgba(255,102,0,.08);
+  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
+  font-size:.7rem;font-weight:700;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
+.lens-title-col{flex:1;min-width:0}
+.lens-name{font-size:.86rem;font-weight:600;color:var(--navy);display:block}
+.lens-preview{font-size:.72rem;color:var(--muted);font-family:var(--font-m);
+  display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.lens-chev{color:var(--muted);transition:transform .22s;font-size:.75rem;flex-shrink:0}
+.lens-card.open .lens-chev{transform:rotate(180deg);color:var(--gold)}
+.lens-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line);
+  font-size:.84rem;line-height:1.65;color:var(--text);padding-top:12px}
+.lens-card.open .lens-body{display:block}
+
 /* Thinking */
 .thinking{display:flex;align-items:center;gap:9px;padding:11px 15px;
   background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
@@ -179,12 +187,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 @keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 
 /* Reasoning trace */
-.active-split{display:grid;grid-template-columns:1fr 270px;gap:0;width:100%}
+.active-split{display:grid;grid-template-columns:1fr 280px;gap:0;width:100%}
 .trace-panel{border-left:1px solid var(--line);background:rgba(255,255,255,.7);
-  backdrop-filter:blur(8px);padding:16px 14px;overflow-y:auto;max-height:340px}
+  backdrop-filter:blur(8px);padding:16px 14px;overflow-y:auto;max-height:360px}
 .trace-hdr{font-family:var(--font-m);font-size:.68rem;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.trace-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:11px;
+.trace-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px;
   animation:trIn .38s ease}
 @keyframes trIn{from{opacity:0;transform:translateX(7px)}to{opacity:1;transform:translateX(0)}}
 .tn{width:26px;height:26px;border-radius:7px;background:rgba(255,102,0,.09);
@@ -247,7 +255,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .send-btn:disabled{opacity:.43;cursor:not-allowed;transform:none}
 .send-btn svg{width:15px;height:15px;color:#fff}
 
-/* === TAB 2 GRAPH === */
+/* === TAB 2 GRAPH (UNCHANGED) === */
 #tab-g{overflow-y:auto;background:var(--bg)}
 #tab-g::-webkit-scrollbar{width:4px}
 #tab-g::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
@@ -432,7 +440,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   </div>
 </div>
 
-<!-- TAB 2 GRAPH — UNCHANGED -->
+<!-- TAB 2 GRAPH — COMPLETELY UNCHANGED -->
 <div id="tab-g" class="tab-panel">
   <div class="gs">
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -501,12 +509,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
+// ─── STATE ────────────────────────────────────────────────────────────────────
 let curModel = 'DVNC Sovereign';
 let busy = false;
-let history = []; // conversation history: [{role:'user',content:''},{role:'assistant',content:''}]
+let history = [];
 
-// ─── LENS DEFINITIONS (for trace animation) ──────────────────────────────────
+// ─── LENS TRACE DEFINITIONS ───────────────────────────────────────────────────
 const LENS_TRACE = [
   { num: '01', name: 'The Geometer',      status: 'Identifying mathematical structure and underlying ratios…' },
   { num: '02', name: 'The Analogist',     status: 'Mapping structural isomorphisms across distant domains…' },
@@ -559,10 +567,32 @@ function esc(s) {
 }
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 function scrollC() { const a = document.getElementById('chatArea'); if (a) a.scrollTop = a.scrollHeight; }
+function ts() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 function aiAv() {
   return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
 }
-function ts() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+
+// ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
+function mdToHtml(text) {
+  if (!text) return '';
+  let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+  const blocks = s.split(/\n\n+/);
+  return blocks.filter(b => b.trim()).map(block => {
+    const lines = block.trim().split('\n');
+    const allList = lines.every(l => /^[-*•] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
+    if (allList) {
+      const items = lines.filter(l => l.trim())
+        .map(l => `<li>${l.replace(/^[-*•] /, '').replace(/^\d+\. /, '')}</li>`)
+        .join('');
+      return `<ul style="padding-left:20px;margin:6px 0">${items}</ul>`;
+    }
+    return `<p>${lines.join('<br>')}</p>`;
+  }).join('');
+}
 
 // ─── MAIN SUBMIT ──────────────────────────────────────────────────────────────
 async function submitQ() {
@@ -578,25 +608,22 @@ async function submitQ() {
   const thr = document.getElementById('thread');
   thr.style.display = 'flex';
 
-  // User bubble
   const ud = document.createElement('div');
   ud.className = 'msg msg-user';
   ud.innerHTML = `<div class="bub">${esc(q)}</div><span class="msg-ts">${ts()}</span>`;
   thr.appendChild(ud);
   scrollC();
 
-  // Thinking indicator
   const tkEl = document.createElement('div');
   tkEl.className = 'msg msg-ai';
   tkEl.id = 'tkEl';
   tkEl.innerHTML = `<div class="ai-row">${aiAv()}<div class="ai-body">
     <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')}</div>
     <div class="thinking"><div class="tdots"><span></span><span></span><span></span></div>
-    <span id="thinkTxt">Thinking…</span></div></div></div>`;
+    <span>Thinking…</span></div></div></div>`;
   thr.appendChild(tkEl);
   scrollC();
 
-  // Call API
   let apiData;
   try {
     const resp = await fetch('/api/chat', {
@@ -604,315 +631,31 @@ async function submitQ() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: q, history })
     });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     apiData = await resp.json();
   } catch (err) {
-    apiData = { type: 'simple', message: 'Network error — please check your connection and try again.' };
+    apiData = { type: 'simple', text: 'Network error — please check your connection and try again.' };
   }
 
-  // Update history
-  const assistantText = apiData.type === 'deep' ? apiData.synthesis : apiData.message;
+  const assistantText = apiData.type === 'deep'
+    ? (apiData.data && apiData.data.synthesis ? apiData.data.synthesis : '')
+    : (apiData.text || '');
   history.push({ role: 'user', content: q });
-  history.push({ role: 'assistant', content: assistantText || '' });
+  history.push({ role: 'assistant', content: assistantText });
 
   if (apiData.type === 'simple') {
-    renderSimple(apiData.message || 'Something went wrong.');
+    renderSimple(apiData.text || 'Something went wrong.');
   } else {
-    await runLensTrace(apiData);
+    await runLensTrace(apiData.data || apiData);
   }
 }
 
-I can see two clear bugs from the screenshot:
-
-1. **Graph + synthesis empty on the first response** — Claude is returning JSON wrapped in ` ```json ``` ` code fences, which breaks the parser. The regex finds nothing valid, so all fields default to empty.
-2. **Simple response shows raw `**markdown**` unrendered** — there's no markdown-to-HTML renderer in the frontend.
-
-Here are the three files that need to change. Only these three — everything else stays the same.
-
----
-
-## Fix 1: `lib/agents.js` — add the critical no-code-fence instruction
-
-Add this one line at the very top of `MASTER_SYSTEM_PROMPT`, before all the lens descriptions:
-
-```javascript
-const MASTER_SYSTEM_PROMPT = `CRITICAL FORMATTING RULE: Your entire response must be a single raw JSON object. Do NOT wrap it in markdown code fences (\`\`\`json or \`\`\`). Do NOT write any text before or after the JSON. Start your response with { and end it with }.
-
-You are DVNC.AI — a discovery intelligence built on Leonardo da Vinci's cognitive architecture as described by Ahmed and Poulter. You think through every significant question using ten simultaneous cognitive lenses drawn directly from Leonardo's documented practice, then synthesise them into a single novel, actionable answer.
-
-THE TEN COGNITIVE LENSES — all active simultaneously on every query:
-
-1. THE GEOMETER: Geometry and the Mathematical Structure of Reality.
-Leonardo held that geometrical proportion and mathematical structure are not descriptions of reality but ARE reality itself. Look for the underlying structural/mathematical pattern that IS the problem — the ratio, symmetry, or constraint that defines the solution space. Do not apply math as a tool; find the math that IS the phenomenon. (Contemporary exemplar: TongGeometry — treating molecules as geometric objects in 3D space, not symbolic graphs.)
-
-2. THE ANALOGIST: The Unity of Human and Natural Systems.
-Leonardo refused to separate human, biological, and engineered systems. He recognised that branching in bronchial passages, trees, and river deltas reflects the same universal optimisation principle — not analogy but structural identity. Find the deep structural isomorphism: where does the governing rule of this problem already exist in another domain or scale? (Contemporary exemplar: Shinkansen 500 nose redesigned on kingfisher bill — tunnel shock = air-water transition, structurally identical.)
-
-3. THE STEWARD: The Earth as Living Body.
-The Earth is not backdrop or resource but a living, self-regulating body with finite tolerance thresholds. Consider: what systemic or planetary boundaries does this question touch? What happens when this scales? What cannot be forced against its nature without ultimate failure? (Contemporary exemplar: Planetary Boundaries framework — Rockström et al., 2009.)
-
-4. THE PROBABILIST: Chaos, Predictability, and Natural Systems.
-Unpredictability is a property of certain phenomena, not a failure of understanding. Resist single-point answers where probability distributions are more honest. Identify: is this system deterministic, probabilistic, or chaotic? Apply appropriate epistemic humility. (Contemporary exemplar: ECMWF ensemble forecasting — no single deterministic forecast is honest for chaotic systems.)
-
-5. THE DIALECTICIAN: The Dialectic of Theory and Experience.
-Deep understanding requires sustained alternation of theoretical abstraction and experiential verification — neither privileged over the other. Identify where in the theory-experience dialectic this question sits. What evidence exists that theory cannot yet receive? What theory is needed to make existing anomalies legible? (Contemporary exemplar: Semmelweis — evidence generating decisive knowledge that theoretical frameworks were not equipped to receive.)
-
-6. THE INTUITIONIST: Structural Intuitions: Art and Science.
-The deepest acts of understanding originate in structural intuition — recognising that something significant is occurring before articulating why. Aesthetic and analytical perception are one act, not two. What does the shape or form of this problem reveal before calculation confirms it? What feels structurally right before proof? (Contemporary exemplar: Calatrava's Alamillo Bridge — structural intuition preceded and generated the formal solution.)
-
-7. THE RESPECTER: Scale, Power, and Respect for Natural Force.
-Forces manageable at human scale become destructive when amplified. The planet's tolerance does not grow proportionally with ambition. Assess consequences not just at the intervention scale but at all larger scales. Distinguish: what is being redirected vs. truly resolved? (Contemporary exemplar: Three Gorges Dam — 100 TWh generated; also mass sedimentation, geological instability, 1.3M displaced. The force was redirected, not resolved.)
-
-8. THE COLLABORATOR: Working with Nature Rather Than Against It.
-When water (or any natural system) is coerced, it ultimately defeats human intention. When properly understood, it enables vision. Nothing comes from nothing — thermodynamic limits are not negotiable. Find the path that works WITH the natural logic of the system. (Contemporary exemplar: Dutch Room for the River — not higher dykes but lower floodplains; accommodation, not resistance.)
-
-9. THE PERCEPTUALIST: Vision, Perception, and the Limits of Knowledge.
-The eye does not passively receive the world but actively constructs it — with biases and blind spots. The visual system generates predictions and updates only on discrepancies. What prior model is the observer bringing that may be distorting what they can see? What anomaly has been dismissed as error? What cannot be detected because no framework yet names it? (Contemporary exemplar: Predictive coding framework — Rao & Ballard, 1999; Friston, 2010.)
-
-10. THE QUESTIONER: The Unknown Unknowns.
-Beyond unknown knowns lie phenomena whose existence cannot yet be formulated as questions. The most consequential instruments consistently disclose unknown unknowns — not because designed to, but because genuine encounters with the natural world produce results for which existing frameworks have no name. What question lies beneath the asked question? What configuration of reality has not been looked for because no one has formulated it? (Contemporary exemplar: JWST deep field — massive mature galaxies 600M years after Big Bang; not an unanswered question but a question no framework had yet enabled anyone to ask.)
-
-INTEGRATION NOTE: These ten lenses are not a menu or a sequence. They are simultaneous cognitive filters. Breakthroughs of the deepest order arise when most or all models are active together. Your response must synthesise all ten into one novel, surprising answer — not a committee report listing ten opinions.
-
-RESPONSE FORMAT — raw JSON object only, starting with { and ending with }:
-
-{
-  "type": "deep",
-  "synthesis": "Your main synthesised answer. 3-5 substantive paragraphs separated by \\n\\n. Novel, specific, intellectually surprising — not a summary of consensus. Apply Leonardo's refusal of disciplinary walls. This should feel like it came from a mind that found the non-obvious connection. Use plain prose — no markdown bold or bullet points inside this field.",
-  "lenses": [
-    {
-      "id": 1,
-      "name": "The Geometer",
-      "contribution": "1-3 sentences: what THIS specific lens concretely revealed or contributed to the synthesis. Be specific to the question asked, not generic."
-    },
-    { "id": 2, "name": "The Analogist", "contribution": "..." },
-    { "id": 3, "name": "The Steward", "contribution": "..." },
-    { "id": 4, "name": "The Probabilist", "contribution": "..." },
-    { "id": 5, "name": "The Dialectician", "contribution": "..." },
-    { "id": 6, "name": "The Intuitionist", "contribution": "..." },
-    { "id": 7, "name": "The Respecter", "contribution": "..." },
-    { "id": 8, "name": "The Collaborator", "contribution": "..." },
-    { "id": 9, "name": "The Perceptualist", "contribution": "..." },
-    { "id": 10, "name": "The Questioner", "contribution": "..." }
-  ],
-  "graph": {
-    "nodes": [
-      {"id": "n1", "label": "Short Label", "type": "hypothesis"},
-      {"id": "n2", "label": "Domain Label", "type": "domain"},
-      {"id": "n3", "label": "Concept Label", "type": "concept"},
-      {"id": "n4", "label": "Analogy Label", "type": "analogy"}
-    ],
-    "edges": [
-      {"from": "n1", "to": "n2", "label": "relationship type"}
-    ]
-  },
-  "experimental_outline": [
-    {"step": 1, "title": "Step title", "detail": "1-2 sentence description."}
-  ],
-  "metrics": {
-    "novelty": 85,
-    "tractability": 72,
-    "cross_domain_distance": 91,
-    "mechanistic_clarity": 88
-  }
-}
-
-GRAPH INSTRUCTIONS:
-- Generate 8-12 nodes representing the ACTUAL intellectual terrain traversed to reach the synthesis
-- Node types: "hypothesis" (the core novel claim, 1-2 nodes max), "domain" (fields of knowledge activated), "concept" (specific mechanisms or ideas), "analogy" (cross-domain bridges found by The Analogist)
-- Nodes MUST span at least 3 different disciplines
-- Edges label the relationship type concisely
-- Node labels must be short (2-4 words maximum)
-
-METRICS: novelty = how surprising vs consensus (0-100); tractability = how feasible to pursue (0-100); cross_domain_distance = how far apart are the domains bridged (0-100); mechanistic_clarity = how clearly the mechanism is articulated (0-100).
-
-EXPERIMENTAL OUTLINE: Only include if the question calls for it. Empty array [] if not applicable.`;
-
-const CLASSIFIER_PROMPT = `You are a query classifier for DVNC.AI, a scientific and intellectual discovery engine.
-
-Classify the following user message. Respond with ONLY the single word "simple" or "deep".
-
-"simple" = the message is: a greeting, thanks, small talk, a request to clarify or expand on something already said in the conversation, a follow-up like "can you explain that more?", "what do you mean by X?", or any message that does NOT require original multi-disciplinary synthesis.
-
-"deep" = the message is: a substantive question about science, technology, medicine, engineering, philosophy, society, or any domain that would genuinely benefit from interdisciplinary synthesis, novel hypothesis generation, cross-domain analogy, or Leonardo-style divergent thinking.
-
-When in doubt about short questions like "why?" or "how?", check the conversation history — if they're following up on a deep topic, classify as "simple" (it's a clarification). Only classify as "deep" if the message ITSELF contains a substantial new question.
-
-User message: `;
-
-module.exports = { MASTER_SYSTEM_PROMPT, CLASSIFIER_PROMPT };
-```
-
----
-
-## Fix 2: `api/chat.js` — robust JSON extraction
-
-```javascript
-const { MASTER_SYSTEM_PROMPT, CLASSIFIER_PROMPT } = require('../lib/agents');
-const { callLLM } = require('../lib/llm');
-
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
-};
-
-function extractJSON(raw) {
-  // Strip markdown code fences (```json ... ``` or ``` ... ```)
-  let s = raw.replace(/^```(?:json)?\s*/im, '').replace(/\s*```\s*$/im, '').trim();
-
-  // Try direct parse first (ideal case — model obeyed instructions)
-  try { return JSON.parse(s); } catch (_) {}
-
-  // Find the outermost { ... } block, handling nested braces
-  const start = s.indexOf('{');
-  if (start === -1) throw new Error('No JSON object found in response');
-  let depth = 0, end = -1;
-  for (let i = start; i < s.length; i++) {
-    if (s[i] === '{') depth++;
-    else if (s[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
-  }
-  if (end === -1) throw new Error('Unbalanced JSON braces');
-  return JSON.parse(s.slice(start, end + 1));
-}
-
-module.exports = async function handler(req, res) {
-  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON body' }); }
-  }
-  if (!body) return res.status(400).json({ error: 'Empty body' });
-
-  const { query, history = [] } = body;
-  if (!query || typeof query !== 'string' || !query.trim()) {
-    return res.status(400).json({ error: 'query is required' });
-  }
-
-  try {
-    // Step 1: Classify
-    const classifyText = await callLLM({
-      systemPrompt: null,
-      messages: [{ role: 'user', content: CLASSIFIER_PROMPT + query.trim() }],
-      maxTokens: 5,
-      temperature: 0
-    });
-
-    const isDeep = classifyText.trim().toLowerCase().startsWith('deep');
-
-    if (!isDeep) {
-      const simpleMessages = [...history, { role: 'user', content: query.trim() }];
-      const simpleResponse = await callLLM({
-        systemPrompt: `You are DVNC.AI, a scientific discovery assistant built on Leonardo da Vinci's cognitive architecture.
-Respond conversationally and helpfully. Be concise — 2-5 sentences maximum unless a longer answer is clearly needed.
-If the user is asking for clarification on something previously discussed, clarify it clearly and briefly.
-If it is a greeting or small talk, respond warmly but in one sentence.
-Do NOT use JSON. Respond in plain natural language without markdown formatting.`,
-        messages: simpleMessages,
-        maxTokens: 400,
-        temperature: 0.7
-      });
-      return res.status(200).json({ type: 'simple', message: simpleResponse.trim() });
-    }
-
-    // Step 2: Deep — all 10 lenses
-    const deepMessages = [...history, { role: 'user', content: query.trim() }];
-    const rawResponse = await callLLM({
-      systemPrompt: MASTER_SYSTEM_PROMPT,
-      messages: deepMessages,
-      maxTokens: 4500,
-      temperature: 0.8
-    });
-
-    let parsed;
-    try {
-      parsed = extractJSON(rawResponse);
-    } catch (parseErr) {
-      console.error('JSON parse failed:', parseErr.message);
-      console.error('Raw response start:', rawResponse.substring(0, 300));
-      // Fallback: return the raw text as a simple response so user gets something
-      return res.status(200).json({
-        type: 'simple',
-        message: rawResponse.replace(/```(?:json)?/g, '').replace(/```/g, '').trim()
-      });
-    }
-
-    parsed.type = 'deep';
-    if (!parsed.synthesis) parsed.synthesis = '';
-    if (!Array.isArray(parsed.lenses)) parsed.lenses = [];
-    if (!parsed.graph) parsed.graph = { nodes: [], edges: [] };
-    if (!Array.isArray(parsed.experimental_outline)) parsed.experimental_outline = [];
-    if (!parsed.metrics) parsed.metrics = { novelty: 80, tractability: 70, cross_domain_distance: 85, mechanistic_clarity: 80 };
-
-    return res.status(200).json(parsed);
-
-  } catch (err) {
-    console.error('Chat handler error:', err);
-    return res.status(500).json({
-      type: 'simple',
-      message: 'I encountered an error processing your request. Please try again.'
-    });
-  }
-};
-```
-
----
-
-## Fix 3: `index.html` — add markdown renderer + fix simple response
-
-Only the JavaScript section needs updating. Find the `<script>` block and replace the two functions below. Everything else in `index.html` stays exactly the same.
-
-**Replace the `renderSynthesis` function:**
-
-```javascript
-// ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
-// Used for both synthesis and simple responses (content comes from our trusted API)
-function mdToHtml(text) {
-  if (!text) return '';
-  // Escape HTML first
-  let s = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  // Apply inline formatting
-  s = s
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
-  // Split into blocks by double newline
-  const blocks = s.split(/\n\n+/);
-  return blocks.filter(b => b.trim()).map(block => {
-    const lines = block.trim().split('\n');
-    const isList = lines.every(l => /^[-*] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
-    if (isList) {
-      const items = lines
-        .filter(l => l.trim())
-        .map(l => `<li style="margin-bottom:4px">${l.replace(/^[-*] /, '').replace(/^\d+\. /, '')}</li>`)
-        .join('');
-      return `<ul style="padding-left:20px;margin:6px 0">${items}</ul>`;
-    }
-    return `<p>${lines.join('<br>')}</p>`;
-  }).join('');
-}
-
-// ─── SYNTHESIS TEXT ───────────────────────────────────────────────────────────
-function renderSynthesis(text) {
-  return mdToHtml(text);
-} 
-```
-
-**Replace the `renderSimple` function:**
-
-```javascript
 // ─── SIMPLE RESPONSE ─────────────────────────────────────────────────────────
 function renderSimple(text) {
   const thr = document.getElementById('thread');
   const tkEl = document.getElementById('tkEl');
   const msg = document.createElement('div');
   msg.className = 'msg msg-ai';
-  // Use mdToHtml so any formatting Claude sends renders properly
   msg.innerHTML = `<div class="ai-row">${aiAv()}<div class="ai-body">
     <div class="ai-name">${esc(curModel)}</div>
     <div class="simple-bub">${mdToHtml(text)}</div>
@@ -923,19 +666,8 @@ function renderSimple(text) {
   document.getElementById('sendBtn').disabled = false;
   scrollC();
 }
-```
 
----
-
-## Summary of what each fix does
-
-| Bug | Root cause | Fix |
-|-----|-----------|-----|
-| Empty graph + no synthesis | Claude wraps JSON in ` ```json ``` ` fences, regex fails to parse | Strip code fences explicitly + brace-counting extractor in `api/chat.js` + explicit no-fence instruction in `lib/agents.js` |
-| `**bold**` shows as literal text | No markdown renderer in frontend | Added `mdToHtml()` applied to both simple responses and synthesis text |
-| Simple response too long/generic | System prompt didn't constrain length | Added "2-5 sentences maximum" + "no markdown formatting" to the simple system prompt |
-
-// ─── LENS TRACE ANIMATION (deep responses) ───────────────────────────────────
+// ─── LENS TRACE ANIMATION ────────────────────────────────────────────────────
 async function runLensTrace(apiData) {
   const thr = document.getElementById('thread');
   const tkEl = document.getElementById('tkEl');
@@ -955,30 +687,31 @@ async function runLensTrace(apiData) {
       <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')} — Activating 10 Cognitive Lenses</div>
       <div class="active-split" style="margin-top:8px">
         <div style="padding-right:14px">
-          <div class="thinking" id="actStatus">
+          <div class="thinking">
             <div class="tdots"><span></span><span></span><span></span></div>
             <span id="actTxt">Activating 10 cognitive lenses…</span>
           </div>
         </div>
-        <div class="trace-panel"><p class="trace-hdr">Cognitive Lens Activation</p>${trRows}</div>
+        <div class="trace-panel">
+          <p class="trace-hdr">Cognitive Lens Activation</p>
+          ${trRows}
+        </div>
       </div>
     </div></div>`;
 
   if (tkEl) tkEl.replaceWith(traceEl); else thr.appendChild(traceEl);
   scrollC();
 
-  // Animate each lens step using real contribution data from API
   const lenses = apiData.lenses || [];
   for (let i = 0; i < LENS_TRACE.length; i++) {
-    await delay(220 + i * 180);
-    const s = document.getElementById('trs' + i);
-    if (s) {
-      s.classList.remove('pend');
+    await delay(200 + i * 190);
+    const step = document.getElementById('trs' + i);
+    if (step) {
+      step.classList.remove('pend');
       const sp = document.getElementById('trsp' + i);
       if (sp && lenses[i] && lenses[i].contribution) {
-        // Show first sentence of real contribution
-        const firstSentence = lenses[i].contribution.split(/[.!?]/)[0].trim();
-        sp.textContent = firstSentence + '.';
+        const first = lenses[i].contribution.split(/[.!?]/)[0].trim();
+        sp.textContent = first ? first + '.' : lenses[i].contribution.substring(0, 80) + '…';
       }
     }
     const tx = document.getElementById('actTxt');
@@ -986,20 +719,21 @@ async function runLensTrace(apiData) {
     scrollC();
   }
 
-  await delay(300);
+  await delay(280);
   renderDeep(apiData);
 }
 
-// ─── DEEP RESPONSE RENDER ─────────────────────────────────────────────────────
+// ─── DEEP RESPONSE ────────────────────────────────────────────────────────────
 function renderDeep(data) {
   const thr = document.getElementById('thread');
   const actEl = document.getElementById('actEl');
 
-  const graphSVG = buildDynamicGraph(data.graph?.nodes || [], data.graph?.edges || []);
-  const synthHTML = renderSynthesis(data.synthesis || '');
+  const graphSVG = buildDynamicGraph(data.graph && data.graph.nodes ? data.graph.nodes : [],
+                                      data.graph && data.graph.edges ? data.graph.edges : []);
+  const synthHTML  = mdToHtml(data.synthesis || '');
   const lensesHTML = buildLensCards(data.lenses || []);
   const metricsHTML = buildMetrics(data.metrics || {});
-  const expHTML = buildExpOutline(data.experimental_outline || []);
+  const expHTML    = buildExpOutline(data.experimental_outline || []);
 
   const msg = document.createElement('div');
   msg.className = 'msg msg-ai';
@@ -1012,7 +746,7 @@ function renderDeep(data) {
           <p class="eyebrow">Interdisciplinary Knowledge Graph</p>
           <div class="sec-title" style="margin-bottom:12px">Discovery Connectome</div>
           <div class="c-box">${graphSVG}</div>
-          <div class="c-legend" style="margin-top:10px">
+          <div class="c-legend">
             <span><i class="ldot" style="background:#ff7a1a;border:1px solid #e06010"></i>Hypothesis</span>
             <span><i class="ldot" style="background:#17b8a6;border:1px solid #0e9188"></i>Domain</span>
             <span><i class="ldot" style="background:#b8d8ff;border:1px solid #5e8fe6"></i>Concept</span>
@@ -1022,13 +756,13 @@ function renderDeep(data) {
 
         <div class="rsec">
           <p class="eyebrow">Leonardian Synthesis</p>
-          <div class="synthesis-block">
-            <div style="display:flex;gap:13px;align-items:flex-start">
-              <div style="width:37px;height:37px;border-radius:11px;background:var(--gold-soft);border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0;margin-top:3px">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:15px;height:15px;color:var(--gold)"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-              </div>
-              <div class="synthesis-text">${synthHTML}</div>
+          <div class="synthesis-wrap">
+            <div class="synth-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
             </div>
+            <div class="synth-text">${synthHTML}</div>
           </div>
         </div>
 
@@ -1059,54 +793,50 @@ function renderDeep(data) {
   scrollC();
 }
 
-// ─── SYNTHESIS TEXT ───────────────────────────────────────────────────────────
-function renderSynthesis(text) {
-  return text.split(/\n\n+/).filter(p => p.trim())
-    .map(p => `<p>${esc(p.trim())}</p>`).join('');
-}
-
 // ─── METRICS ─────────────────────────────────────────────────────────────────
 function buildMetrics(m) {
-  const items = [
-    { val: m.novelty ?? '—',              lbl: 'Novelty' },
-    { val: m.mechanistic_clarity ?? '—',  lbl: 'Mechanistic clarity' },
-    { val: m.tractability ?? '—',         lbl: 'Tractability' },
-    { val: m.cross_domain_distance ?? '—',lbl: 'Cross-domain dist.' },
-  ];
-  return items.map(i =>
-    `<div class="mpill"><span class="mval">${esc(String(i.val))}</span><span class="mlbl">${esc(i.lbl)}</span></div>`
-  ).join('');
+  return [
+    { val: m.interdisciplinary_score, lbl: 'Interdisciplinary' },
+    { val: m.novelty_index,           lbl: 'Novelty index' },
+    { val: m.synthesis_depth,         lbl: 'Synthesis depth' },
+    { val: m.practical_applicability, lbl: 'Applicability' },
+  ].map(i => `<div class="mpill">
+    <span class="mval">${i.val != null ? esc(String(i.val)) : '—'}</span>
+    <span class="mlbl">${esc(i.lbl)}</span>
+  </div>`).join('');
 }
 
 // ─── EXPERIMENTAL OUTLINE ─────────────────────────────────────────────────────
 function buildExpOutline(steps) {
   if (!steps || steps.length === 0) return '';
-  return steps.map(s =>
-    `<div class="exp-step">
-      <div class="exp-num">${esc(String(s.step))}</div>
-      <div class="exp-copy">
-        <h5>${esc(s.title || '')}</h5>
-        <p>${esc(s.detail || '')}</p>
-      </div>
-    </div>`
-  ).join('');
+  if (typeof steps === 'string') {
+    return `<div class="exp-step"><div class="exp-copy"><p>${esc(steps)}</p></div></div>`;
+  }
+  return steps.map(s => `<div class="exp-step">
+    <div class="exp-num">${esc(String(s.step || ''))}</div>
+    <div class="exp-copy">
+      <h5>${esc(s.title || '')}</h5>
+      <p>${esc(s.detail || '')}</p>
+    </div>
+  </div>`).join('');
 }
 
-// ─── LENS ACCORDION CARDS ─────────────────────────────────────────────────────
+// ─── LENS ACCORDION ───────────────────────────────────────────────────────────
 function buildLensCards(lenses) {
-  if (!lenses.length) return '<p style="font-size:.83rem;color:var(--muted);padding:8px 0">No lens data available.</p>';
+  if (!lenses.length) return '<p style="font-size:.83rem;color:var(--muted);padding:8px 0;grid-column:1/-1">Lens data unavailable.</p>';
   return lenses.map(l => {
-    const preview = (l.contribution || '').substring(0, 55) + ((l.contribution || '').length > 55 ? '…' : '');
+    const contrib = l.contribution || '';
+    const preview = contrib.length > 60 ? contrib.substring(0, 58) + '…' : contrib;
     return `<div class="lens-card" id="lc${l.id}">
       <div class="lens-header" onclick="toggleLens(${l.id})">
-        <div class="lens-num">${String(l.id).padStart(2,'0')}</div>
+        <div class="lens-num">${String(l.id || '').padStart(2, '0')}</div>
         <div class="lens-title-col">
           <span class="lens-name">${esc(l.name || '')}</span>
           <span class="lens-preview">${esc(preview)}</span>
         </div>
         <span class="lens-chev">▾</span>
       </div>
-      <div class="lens-body">${esc(l.contribution || '')}</div>
+      <div class="lens-body">${esc(contrib)}</div>
     </div>`;
   }).join('');
 }
@@ -1119,26 +849,24 @@ function toggleLens(id) {
 function toggleLenses(btn) {
   const g = document.getElementById('lensGrid');
   const a = btn.querySelector('.latarrow');
-  const open = g.style.display !== 'none' && g.style.display !== '';
-  g.style.display = open ? 'none' : 'grid';
-  if (a) a.textContent = open ? '▾' : '▴';
+  const isOpen = g.style.display === 'grid';
+  g.style.display = isOpen ? 'none' : 'grid';
+  if (a) a.textContent = isOpen ? '▾' : '▴';
   setTimeout(() => scrollC(), 50);
 }
 
 // ─── DYNAMIC KNOWLEDGE GRAPH ──────────────────────────────────────────────────
 function buildDynamicGraph(nodes, edges) {
   if (!nodes || nodes.length === 0) {
-    return `<svg viewBox="0 0 760 200" style="width:100%;height:120px">
-      <text x="380" y="100" text-anchor="middle" font-family="Instrument Sans,sans-serif"
-        font-size="13" fill="#5a5f7a">Graph data not available for this query.</text></svg>`;
+    return `<svg viewBox="0 0 760 160" style="width:100%;height:100px">
+      <text x="380" y="85" text-anchor="middle" font-family="Instrument Sans,sans-serif"
+        font-size="13" fill="#5a5f7a">Graph data not available for this response.</text>
+    </svg>`;
   }
 
-  const svgW = 900, svgH = 420;
-  const cx = 450, cy = 210;
-
-  // Radial layout: hypothesis → center, domain → inner ring, concept → mid, analogy → outer
-  const ringR = { hypothesis: 0, domain: 95, concept: 178, analogy: 248 };
-  const defaultR = 178;
+  const svgW = 900, svgH = 440;
+  const cx = 450, cy = 220;
+  const ringR = { hypothesis: 0, domain: 92, concept: 168, analogy: 232 };
 
   const byType = {};
   nodes.forEach(n => {
@@ -1147,9 +875,14 @@ function buildDynamicGraph(nodes, edges) {
     byType[t].push(n);
   });
 
+  if (!byType.hypothesis && nodes.length > 0) {
+    byType.hypothesis = [nodes[0]];
+    byType.concept = (byType.concept || []).concat(nodes.slice(1));
+  }
+
   const positioned = [];
   Object.entries(byType).forEach(([type, tNodes]) => {
-    const r = ringR[type] !== undefined ? ringR[type] : defaultR;
+    const r = ringR[type] !== undefined ? ringR[type] : 168;
     tNodes.forEach((node, i) => {
       const angle = r === 0 ? -Math.PI / 2 : (2 * Math.PI * i / tNodes.length) - Math.PI / 2;
       positioned.push({ ...node, px: cx + r * Math.cos(angle), py: cy + r * Math.sin(angle) });
@@ -1159,7 +892,7 @@ function buildDynamicGraph(nodes, edges) {
   const nodeMap = {};
   positioned.forEach(n => { nodeMap[n.id] = n; });
 
-  const typeColors = {
+  const typeStyle = {
     hypothesis: { fill: '#ff7a1a', stroke: '#e06010', textFill: '#0f1230', r: 20 },
     domain:     { fill: '#17b8a6', stroke: '#0e9188', textFill: '#0f1230', r: 14 },
     concept:    { fill: '#b8d8ff', stroke: '#5e8fe6', textFill: '#3a4180', r: 12 },
@@ -1170,41 +903,44 @@ function buildDynamicGraph(nodes, edges) {
   (edges || []).forEach(e => {
     const a = nodeMap[e.from], b = nodeMap[e.to];
     if (!a || !b) return;
-    edgeSVG += `<line x1="${a.px.toFixed(1)}" y1="${a.py.toFixed(1)}" x2="${b.px.toFixed(1)}" y2="${b.py.toFixed(1)}"
+    edgeSVG += `<line x1="${a.px.toFixed(1)}" y1="${a.py.toFixed(1)}"
+      x2="${b.px.toFixed(1)}" y2="${b.py.toFixed(1)}"
       stroke="rgba(26,31,78,.14)" stroke-width="1.6"/>`;
   });
 
   let nodeSVG = '';
   positioned.forEach(n => {
-    const c = typeColors[n.type] || typeColors.concept;
+    const st = typeStyle[n.type] || typeStyle.concept;
     const isHyp = n.type === 'hypothesis';
     if (isHyp) {
-      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="36" fill="none" stroke="rgba(255,122,26,.09)" stroke-width="14"/>`;
-      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="27" fill="none" stroke="rgba(255,122,26,.07)" stroke-width="9"/>`;
+      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="36"
+        fill="none" stroke="rgba(255,122,26,.09)" stroke-width="14"/>`;
+      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="27"
+        fill="none" stroke="rgba(255,122,26,.07)" stroke-width="9"/>`;
     }
-    nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="${c.r}" fill="${c.fill}" stroke="${c.stroke}" stroke-width="2"/>`;
+    nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}"
+      r="${st.r}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="2"/>`;
 
-    // Smart label placement
     const dx = n.px - cx, dy = n.py - cy;
-    const off = c.r + 8;
+    const off = st.r + 9;
     let lx, ly, anchor;
-    if (Math.abs(dx) >= Math.abs(dy) * 0.6) {
+    if (Math.abs(dx) >= Math.abs(dy) * 0.55) {
       lx = n.px + (dx >= 0 ? off : -off);
       ly = n.py + 4;
       anchor = dx >= 0 ? 'start' : 'end';
     } else {
       lx = n.px;
-      ly = n.py + (dy >= 0 ? off + 10 : -off - 2);
+      ly = n.py + (dy >= 0 ? off + 10 : -(off + 2));
       anchor = 'middle';
     }
-    const label = (n.label || '').length > 20 ? n.label.substring(0, 18) + '…' : n.label;
+    const label = (n.label || '').length > 22 ? n.label.substring(0, 20) + '…' : (n.label || '');
     nodeSVG += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}"
-      fill="${c.textFill}" font-size="${isHyp ? 13 : 11.5}"
+      fill="${st.textFill}" font-size="${isHyp ? 13 : 11.5}"
       font-weight="${isHyp ? '700' : '500'}"
       font-family="Instrument Sans,sans-serif">${esc(label)}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%;height:340px">
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%;height:320px">
     ${edgeSVG}${nodeSVG}
   </svg>`;
 }
