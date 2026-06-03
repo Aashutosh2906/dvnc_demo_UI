@@ -1,109 +1,155 @@
-const { MASTER_SYSTEM_PROMPT, CLASSIFIER_PROMPT } = require('../lib/agents');
+// DVNC.AI Chat API
+// Vercel serverless function — handles both simple and deep queries
+
 const { callLLM } = require('../lib/llm');
+const { MASTER_SYSTEM_PROMPT } = require('../lib/agents');
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type'
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json',
 };
 
+// Fast local classifier — no LLM call needed
+function isSimpleQuery(msg) {
+  const m = msg.trim().toLowerCase();
+  if (m.split(' ').length < 6) return true;
+  const simplePatterns = [
+    /^(hi|hello|hey|yo|sup|howdy)/,
+    /^(thanks|thank you|thx|ty)/,
+    /^(yes|no|ok|okay|sure|got it|makes sense|interesting|cool|great|nice|awesome)/,
+    /^(what is your name|who are you|what can you do|what are you)/,
+    /^(what'?s? (dvnc|this|that))/,
+    /^(how are you|are you (an )?ai|are you human)/,
+    /^(good (morning|afternoon|evening|night))/,
+    /^(bye|goodbye|see you|cya)/,
+  ];
+  return simplePatterns.some(p => p.test(m));
+}
+
+// Strips markdown code fences then finds JSON by brace counting
 function extractJSON(raw) {
-  // Strip markdown code fences (```json ... ``` or ``` ... ```)
-  let s = raw.replace(/^```(?:json)?\s*/im, '').replace(/\s*```\s*$/im, '').trim();
+  let s = raw
+    .replace(/^```(?:json)?\s*/im, '')
+    .replace(/\s*```\s*$/im, '')
+    .trim();
 
-  // Try direct parse first (ideal case — model obeyed instructions)
-  try { return JSON.parse(s); } catch (_) {}
+  try {
+    return JSON.parse(s);
+  } catch (_) {}
 
-  // Find the outermost { ... } block, handling nested braces
   const start = s.indexOf('{');
   if (start === -1) throw new Error('No JSON object found in response');
-  let depth = 0, end = -1;
+
+  let depth = 0;
+  let end = -1;
   for (let i = start; i < s.length; i++) {
     if (s[i] === '{') depth++;
-    else if (s[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
+    else if (s[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
   }
-  if (end === -1) throw new Error('Unbalanced JSON braces');
+
+  if (end === -1) throw new Error('Unbalanced JSON braces in response');
   return JSON.parse(s.slice(start, end + 1));
 }
 
+const SIMPLE_SYSTEM_PROMPT = `You are DVNC, a brilliant polymath AI inspired by Leonardo da Vinci. You are warm, intellectually curious, and direct.
+
+For simple conversational messages, greetings, or straightforward questions: respond naturally and concisely. Be concise — 2-5 sentences maximum unless a longer answer is clearly needed.
+
+Do NOT use JSON. Respond in plain natural language. Light markdown is fine (bold, italics) but avoid heavy formatting for simple responses.`;
+
 module.exports = async function handler(req, res) {
-  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON body' }); }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, CORS_HEADERS);
+    res.end();
+    return;
   }
-  if (!body) return res.status(400).json({ error: 'Empty body' });
 
-  const { query, history = [] } = body;
-  if (!query || typeof query !== 'string' || !query.trim()) {
-    return res.status(400).json({ error: 'query is required' });
+  if (req.method !== 'POST') {
+    res.writeHead(405, CORS_HEADERS);
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
+  }
+
+  let body;
+  try {
+    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  } catch (_) {
+    res.writeHead(400, CORS_HEADERS);
+    res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+    return;
+  }
+
+  const { message, query, history = [] } = body;
+  const userMessage = message || query;
+
+  if (!userMessage || typeof userMessage !== 'string' || !userMessage.trim()) {
+    res.writeHead(400, CORS_HEADERS);
+    res.end(JSON.stringify({ error: 'Message is required' }));
+    return;
   }
 
   try {
-    // Step 1: Classify
-    const classifyText = await callLLM({
-      systemPrompt: null,
-      messages: [{ role: 'user', content: CLASSIFIER_PROMPT + query.trim() }],
-      maxTokens: 5,
-      temperature: 0
-    });
+    // Fast local classification — no extra LLM call
+    const classification = isSimpleQuery(userMessage) ? 'simple' : 'deep';
 
-    const isDeep = classifyText.trim().toLowerCase().startsWith('deep');
+    const conversationMessages = [
+      ...history,
+      { role: 'user', content: userMessage.trim() },
+    ];
 
-    if (!isDeep) {
-      const simpleMessages = [...history, { role: 'user', content: query.trim() }];
-      const simpleResponse = await callLLM({
-        systemPrompt: `You are DVNC.AI, a scientific discovery assistant built on Leonardo da Vinci's cognitive architecture.
-Respond conversationally and helpfully. Be concise — 2-5 sentences maximum unless a longer answer is clearly needed.
-If the user is asking for clarification on something previously discussed, clarify it clearly and briefly.
-If it is a greeting or small talk, respond warmly but in one sentence.
-Do NOT use JSON. Respond in plain natural language without markdown formatting.`,
-        messages: simpleMessages,
-        maxTokens: 400,
-        temperature: 0.7
+    if (classification === 'simple') {
+      const responseText = await callLLM({
+        systemPrompt: SIMPLE_SYSTEM_PROMPT,
+        messages: conversationMessages,
+        maxTokens: 300,
+        temperature: 0.7,
       });
-      return res.status(200).json({ type: 'simple', message: simpleResponse.trim() });
-    }
 
-    // Step 2: Deep — all 10 lenses
-    const deepMessages = [...history, { role: 'user', content: query.trim() }];
-    const rawResponse = await callLLM({
-      systemPrompt: MASTER_SYSTEM_PROMPT,
-      messages: deepMessages,
-      maxTokens: 4500,
-      temperature: 0.8
-    });
-
-    let parsed;
-    try {
-      parsed = extractJSON(rawResponse);
-    } catch (parseErr) {
-      console.error('JSON parse failed:', parseErr.message);
-      console.error('Raw response start:', rawResponse.substring(0, 300));
-      // Fallback: return the raw text as a simple response so user gets something
-      return res.status(200).json({
+      res.writeHead(200, CORS_HEADERS);
+      res.end(JSON.stringify({
         type: 'simple',
-        message: rawResponse.replace(/```(?:json)?/g, '').replace(/```/g, '').trim()
+        text: responseText.trim(),
+      }));
+    } else {
+      const rawResponse = await callLLM({
+        systemPrompt: MASTER_SYSTEM_PROMPT,
+        messages: conversationMessages,
+        maxTokens: 4000,
+        temperature: 0.8,
       });
+
+      let parsed;
+      try {
+        parsed = extractJSON(rawResponse);
+      } catch (parseErr) {
+        console.error('JSON parse failed, returning as simple:', parseErr.message);
+        res.writeHead(200, CORS_HEADERS);
+        res.end(JSON.stringify({
+          type: 'simple',
+          text: rawResponse.trim(),
+        }));
+        return;
+      }
+
+      res.writeHead(200, CORS_HEADERS);
+      res.end(JSON.stringify({
+        type: 'deep',
+        data: parsed,
+      }));
     }
-
-    parsed.type = 'deep';
-    if (!parsed.synthesis) parsed.synthesis = '';
-    if (!Array.isArray(parsed.lenses)) parsed.lenses = [];
-    if (!parsed.graph) parsed.graph = { nodes: [], edges: [] };
-    if (!Array.isArray(parsed.experimental_outline)) parsed.experimental_outline = [];
-    if (!parsed.metrics) parsed.metrics = { novelty: 80, tractability: 70, cross_domain_distance: 85, mechanistic_clarity: 80 };
-
-    return res.status(200).json(parsed);
-
   } catch (err) {
     console.error('Chat handler error:', err);
-    return res.status(500).json({
-      type: 'simple',
-      message: 'I encountered an error processing your request. Please try again.'
-    });
+    res.writeHead(500, CORS_HEADERS);
+    res.end(JSON.stringify({
+      error: err.message || 'Internal server error',
+    }));
   }
 };
