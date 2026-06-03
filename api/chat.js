@@ -7,29 +7,43 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 };
 
-module.exports = async function handler(req, res) {
-  // Set CORS on every response
-  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+function extractJSON(raw) {
+  // Strip markdown code fences (```json ... ``` or ``` ... ```)
+  let s = raw.replace(/^```(?:json)?\s*/im, '').replace(/\s*```\s*$/im, '').trim();
 
+  // Try direct parse first (ideal case — model obeyed instructions)
+  try { return JSON.parse(s); } catch (_) {}
+
+  // Find the outermost { ... } block, handling nested braces
+  const start = s.indexOf('{');
+  if (start === -1) throw new Error('No JSON object found in response');
+  let depth = 0, end = -1;
+  for (let i = start; i < s.length; i++) {
+    if (s[i] === '{') depth++;
+    else if (s[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end === -1) throw new Error('Unbalanced JSON braces');
+  return JSON.parse(s.slice(start, end + 1));
+}
+
+module.exports = async function handler(req, res) {
+  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   let body = req.body;
-
-  // Handle cases where body isn't auto-parsed
   if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON' }); }
+    try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON body' }); }
   }
   if (!body) return res.status(400).json({ error: 'Empty body' });
 
   const { query, history = [] } = body;
-
   if (!query || typeof query !== 'string' || !query.trim()) {
     return res.status(400).json({ error: 'query is required' });
   }
 
   try {
-    // Step 1: Classify — is this a deep question or a simple/conversational one?
+    // Step 1: Classify
     const classifyText = await callLLM({
       systemPrompt: null,
       messages: [{ role: 'user', content: CLASSIFIER_PROMPT + query.trim() }],
@@ -40,33 +54,22 @@ module.exports = async function handler(req, res) {
     const isDeep = classifyText.trim().toLowerCase().startsWith('deep');
 
     if (!isDeep) {
-      // Simple conversational response — no lenses, just answer naturally
-      const simpleMessages = [
-        ...history,
-        { role: 'user', content: query.trim() }
-      ];
+      const simpleMessages = [...history, { role: 'user', content: query.trim() }];
       const simpleResponse = await callLLM({
-        systemPrompt: `You are DVNC.AI, a scientific discovery assistant built on Leonardo da Vinci's cognitive architecture. 
-Respond conversationally and helpfully to this message. Be concise. 
-If the user is asking for clarification on something you previously said, clarify it clearly.
-If it's a greeting or small talk, respond warmly but briefly.
-Do NOT use JSON. Just respond in plain natural language.`,
+        systemPrompt: `You are DVNC.AI, a scientific discovery assistant built on Leonardo da Vinci's cognitive architecture.
+Respond conversationally and helpfully. Be concise — 2-5 sentences maximum unless a longer answer is clearly needed.
+If the user is asking for clarification on something previously discussed, clarify it clearly and briefly.
+If it is a greeting or small talk, respond warmly but in one sentence.
+Do NOT use JSON. Respond in plain natural language without markdown formatting.`,
         messages: simpleMessages,
-        maxTokens: 600,
+        maxTokens: 400,
         temperature: 0.7
       });
-      return res.status(200).json({
-        type: 'simple',
-        message: simpleResponse.trim()
-      });
+      return res.status(200).json({ type: 'simple', message: simpleResponse.trim() });
     }
 
-    // Step 2: Deep — run all 10 cognitive lenses
-    const deepMessages = [
-      ...history,
-      { role: 'user', content: query.trim() }
-    ];
-
+    // Step 2: Deep — all 10 lenses
+    const deepMessages = [...history, { role: 'user', content: query.trim() }];
     const rawResponse = await callLLM({
       systemPrompt: MASTER_SYSTEM_PROMPT,
       messages: deepMessages,
@@ -74,18 +77,21 @@ Do NOT use JSON. Just respond in plain natural language.`,
       temperature: 0.8
     });
 
-    // Extract JSON from response (Claude sometimes wraps it in ```json blocks)
-    const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error('No JSON found in response:', rawResponse.substring(0, 200));
-      throw new Error('Model did not return valid JSON');
+    let parsed;
+    try {
+      parsed = extractJSON(rawResponse);
+    } catch (parseErr) {
+      console.error('JSON parse failed:', parseErr.message);
+      console.error('Raw response start:', rawResponse.substring(0, 300));
+      // Fallback: return the raw text as a simple response so user gets something
+      return res.status(200).json({
+        type: 'simple',
+        message: rawResponse.replace(/```(?:json)?/g, '').replace(/```/g, '').trim()
+      });
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
     parsed.type = 'deep';
-
-    // Validate required fields, provide defaults if missing
-    if (!parsed.synthesis) parsed.synthesis = rawResponse;
+    if (!parsed.synthesis) parsed.synthesis = '';
     if (!Array.isArray(parsed.lenses)) parsed.lenses = [];
     if (!parsed.graph) parsed.graph = { nodes: [], edges: [] };
     if (!Array.isArray(parsed.experimental_outline)) parsed.experimental_outline = [];
@@ -97,7 +103,7 @@ Do NOT use JSON. Just respond in plain natural language.`,
     console.error('Chat handler error:', err);
     return res.status(500).json({
       type: 'simple',
-      message: 'I encountered an error processing your request. Please try again — if the problem persists, the API key may need checking.'
+      message: 'I encountered an error processing your request. Please try again.'
     });
   }
 };
