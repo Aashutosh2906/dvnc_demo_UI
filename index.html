@@ -795,12 +795,13 @@ function renderDeep(data) {
 
 // ─── METRICS ─────────────────────────────────────────────────────────────────
 function buildMetrics(m) {
-  return [
-    { val: m.interdisciplinary_score, lbl: 'Interdisciplinary' },
-    { val: m.novelty_index,           lbl: 'Novelty index' },
-    { val: m.synthesis_depth,         lbl: 'Synthesis depth' },
-    { val: m.practical_applicability, lbl: 'Applicability' },
-  ].map(i => `<div class="mpill">
+  const entries = [
+    { val: m.interdisciplinary_score || m.cross_domain_distance, lbl: 'Interdisciplinary' },
+    { val: m.novelty_index          || m.novelty,                lbl: 'Novelty' },
+    { val: m.synthesis_depth        || m.mechanistic_clarity,    lbl: 'Depth' },
+    { val: m.practical_applicability|| m.tractability,           lbl: 'Applicability' },
+  ];
+  return entries.map(i => `<div class="mpill">
     <span class="mval">${i.val != null ? esc(String(i.val)) : '—'}</span>
     <span class="mlbl">${esc(i.lbl)}</span>
   </div>`).join('');
