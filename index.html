@@ -91,11 +91,14 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .ai-name{font-size:.7rem;font-family:var(--font-m);color:var(--muted);
   letter-spacing:.10em;text-transform:uppercase;margin-bottom:8px}
 
-/* Simple bubble (only for hard errors) */
+/* Simple bubble */
 .simple-bub{background:var(--white);border:1px solid var(--line);border-radius:0 18px 18px 18px;
   padding:15px 18px;font-size:.93rem;line-height:1.7;color:var(--text);
   box-shadow:0 4px 16px rgba(26,31,78,.06);max-width:88%}
 .simple-bub p{margin-bottom:10px}.simple-bub p:last-child{margin-bottom:0}
+.simple-bub ul{padding-left:20px;margin:6px 0}.simple-bub li{margin-bottom:4px}
+.simple-bub strong{color:var(--navy);font-weight:600}
+.simple-bub em{font-style:italic;color:var(--navy-soft)}
 
 /* Eyebrow label */
 .eyebrow{font-family:var(--font-m);font-size:.67rem;letter-spacing:.17em;
@@ -177,6 +180,8 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .innov-body{padding:20px 22px}
 .synth-text{font-size:.93rem;line-height:1.76;color:var(--text)}
 .synth-text p{margin-bottom:14px}.synth-text p:last-child{margin-bottom:0}
+.synth-text strong{color:var(--navy);font-weight:600}
+.synth-text em{font-style:italic;color:var(--navy-soft)}
 .synth-text ul{padding-left:20px;margin:6px 0 12px}.synth-text li{margin-bottom:5px}
 .innov-metrics{display:flex;gap:8px;flex-wrap:wrap;
   padding:14px 22px 18px;border-top:1px solid var(--line)}
@@ -254,7 +259,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
   font-size:.83rem;color:var(--muted);font-family:var(--font-m)}
 
-/* === GRAPH TAB === */
+/* === GRAPH TAB (UNCHANGED) === */
 #tab-g{overflow-y:auto;background:var(--bg)}
 #tab-g::-webkit-scrollbar{width:4px}
 #tab-g::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
@@ -342,7 +347,8 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
       <circle cx="510" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
       <path id="tarc" d="M 115,430 A 285,285 0 0,1 685,430" fill="none"/>
       <text font-family="Cormorant Garamond,serif" font-size="14" fill="#1a1f4e" letter-spacing="2">
-        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
+        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined
+                  <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
       </text>
     </svg>
   </div>
@@ -410,7 +416,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   </div>
 </div>
 
-<!-- TAB 2 -->
+<!-- TAB 2 — UNCHANGED -->
 <div id="tab-g" class="tab-panel">
   <div class="gs">
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -454,9 +460,9 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
             <h3>Self-Learning Knowledge Graph</h3>
           </div>
           <div class="gleg">
-            <span><i class="ldot" style="background:#ff7a1a;border:1px solid #c85000"></i>query</span>
-            <span><i class="ldot" style="background:#17b8a6;border:1px solid #0d9489"></i>paper</span>
-            <span><i class="ldot" style="background:#cce4ff;border:1px solid #4a7fcc"></i>uploaded PDF</span>
+            <span><i class="ldot" style="background:#ffd8b3;border:1px solid #de9e58"></i>query</span>
+            <span><i class="ldot" style="background:#d7f6f2;border:1px solid #4fb3a5"></i>paper</span>
+            <span><i class="ldot" style="background:#e7defe;border:1px solid #8f73d9"></i>uploaded PDF</span>
           </div>
         </div>
         <div class="gstage"><div class="gempty"><h4>No papers mapped yet</h4><p>Search by topic, title, DOI, or link, then select papers before graph ingestion.</p></div></div>
@@ -543,34 +549,19 @@ function aiAv() {
   return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
 }
 
-/* Hardened markdown → HTML renderer */
 function mdToHtml(text) {
   if (!text) return '';
-  let s = String(text);
-
-  return s.split(/\n\n+/).filter(b => b.trim()).map(block => {
+  let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+       .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>');
+  return s.split(/\n\n+/).filter(b=>b.trim()).map(block => {
     const lines = block.trim().split('\n');
-
-    const isList =
-      lines.length > 1 &&
-      lines.every(l =>
-        /^[\-\*•] /.test(l.trim()) || /^\d+\.\s/.test(l.trim())
-      );
-
+    const isList = lines.every(l => /^[-*•] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
     if (isList) {
-      const items = lines.filter(l => l.trim()).map(l => {
-        let t = l.replace(/^[\-\*•] /, '').replace(/^\d+\.\s/, '');
-        t = t.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        return `<li>${t}</li>`;
-      });
-      return `<ul style="padding-left:20px;margin:6px 0">${items.join('')}</ul>`;
+      return `<ul style="padding-left:20px;margin:6px 0">${lines.filter(l=>l.trim()).map(l=>`<li>${l.replace(/^[-*•] /,'').replace(/^\d+\. /,'')}</li>`).join('')}</ul>`;
     }
-
-    let para = lines.join('<br>');
-    para = para.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-               .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    return `<p>${para}</p>`;
+    return `<p>${lines.join('<br>')}</p>`;
   }).join('');
 }
 
@@ -614,34 +605,25 @@ async function submitQ() {
   let apiData;
   try {
     const resp = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ query: q, history })
     });
-    const raw = await resp.text();
-    try {
-      apiData = JSON.parse(raw);
-    } catch {
-      apiData = raw; // double-serialized or plain text
-    }
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    apiData = await resp.json();
   } catch (err) {
-    apiData = { error: true, message: 'Network error — please check your connection and try again.' };
+    apiData = { type:'simple', text:'Network error — please check your connection and try again.' };
   }
 
-  if (typeof apiData === 'string') {
-    try { apiData = JSON.parse(apiData); } catch (_) {
-      apiData = { type:'deep', synthesis: apiData, lenses:[], graph:{nodes:[],edges:[]}, experimental_outline:[], metrics:{} };
-    }
-  }
-
-  const assistantText = apiData.synthesis || apiData.text || apiData.message || '';
+  const assistantText = apiData.type==='deep'
+    ? ((apiData.data||apiData).synthesis || '')
+    : (apiData.text || apiData.message || '');
   history.push({ role:'user', content:q });
   history.push({ role:'assistant', content:assistantText });
 
-  if (apiData.error && !apiData.synthesis) {
-    renderSimple(apiData.message || 'Something went wrong.');
+  if (apiData.type === 'simple') {
+    renderSimple(apiData.text || apiData.message || 'Something went wrong.');
   } else {
-    await runLensTrace(apiData);
+    await runLensTrace(apiData.data || apiData);
   }
 }
 
@@ -715,16 +697,10 @@ function renderDeep(data) {
   const thr = document.getElementById('thread');
   const actEl = document.getElementById('actEl');
 
-  let synthRaw = data.synthesis || '';
-  if (typeof synthRaw !== 'string') synthRaw = String(synthRaw);
-  if (synthRaw.trim().startsWith('{') && synthRaw.includes('"lenses"')) {
-    synthRaw = 'Synthesis unavailable — please try again.';
-  }
-  const synthHTML = mdToHtml(synthRaw);
-
   const graphSVG = buildDynamicGraph(data.graph&&data.graph.nodes ? data.graph.nodes : [],
-                                     data.graph&&data.graph.edges ? data.graph.edges : []);
+                                      data.graph&&data.graph.edges ? data.graph.edges : []);
   const lensGrid  = buildLensGrid(data.lenses || []);
+  const synthHTML = mdToHtml(data.synthesis || '');
   const metHTML   = buildMetrics(data.metrics || {});
   const expHTML   = buildExpOutline(data.experimental_outline || []);
 
@@ -828,6 +804,7 @@ function buildDynamicGraph(rawNodes, rawEdges) {
     return `<svg viewBox="0 0 760 100" style="width:100%;height:70px"><text x="380" y="55" text-anchor="middle" font-family="Instrument Sans,sans-serif" font-size="12" fill="#5a5f7a">Graph data unavailable.</text></svg>`;
   }
 
+  // Deduplicate nodes by label
   const seenL = new Set();
   const nodes = rawNodes.filter(n => {
     const k = (n.label||'').toLowerCase().trim();
@@ -840,6 +817,7 @@ function buildDynamicGraph(rawNodes, rawEdges) {
   const W = 840, H = 360, N = nodes.length;
   const hypI = nodes.findIndex(n => n.type === 'hypothesis');
 
+  // Initialize positions: hypothesis at center, others in circle
   const pos = nodes.map((n, i) => {
     if (n.type === 'hypothesis') return { x: W/2, y: H/2 };
     const angle = (2*Math.PI * i / N) - Math.PI/2;
@@ -850,6 +828,7 @@ function buildDynamicGraph(rawNodes, rawEdges) {
   const idxMap = {};
   nodes.forEach((n,i) => idxMap[n.id] = i);
 
+  // Fruchterman-Reingold layout
   const k = Math.sqrt(W * H / N) * 0.82;
   for (let it = 0; it < 160; it++) {
     const cool = Math.max(0.05, 1 - it/160);
