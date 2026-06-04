@@ -614,17 +614,15 @@ async function submitQ() {
     apiData = { type:'simple', text:'Network error — please check your connection and try again.' };
   }
 
-  const assistantText = apiData.type === 'deep'
-    ? (apiData.synthesis || '')
-    : (apiData.text || apiData.message || '');
-  history.push({ role:'user', content:q });
-  history.push({ role:'assistant', content:assistantText });
+if (typeof apiData === 'string') {
+  try { apiData = JSON.parse(apiData); } catch(_) {}
+}
 
-  if (apiData.type === 'simple') {
-    renderSimple(apiData.text || apiData.message || 'Something went wrong.');
-  } else {
-    // ── FIX 1: apiData is now flat (no .data wrapper) — pass directly ──
-    await runLensTrace(apiData);
+const assistantText = apiData.synthesis || apiData.text || apiData.message || '';
+history.push({ role:'user', content:q });
+history.push({ role:'assistant', content:assistantText });
+
+await runLensTrace(apiData);
   }
 }
 
