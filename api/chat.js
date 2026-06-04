@@ -35,27 +35,13 @@ function extractJSON(raw) {
     .replace(/\s*```\s*$/im, '')
     .trim();
 
-  try {
-    return JSON.parse(s);
-  } catch (_) {}
+  try { return JSON.parse(s); } catch (_) {}
 
   const start = s.indexOf('{');
-  if (start === -1) throw new Error('No JSON object found in response');
-
-  let depth = 0;
-  let end = -1;
-  for (let i = start; i < s.length; i++) {
-    if (s[i] === '{') depth++;
-    else if (s[i] === '}') {
-      depth--;
-      if (depth === 0) {
-        end = i;
-        break;
-      }
-    }
+  const end = s.lastIndexOf('}');
+  if (start === -1 || end === -1 || end <= start) {
+    throw new Error('No JSON object found in response');
   }
-
-  if (end === -1) throw new Error('Unbalanced JSON braces in response');
   return JSON.parse(s.slice(start, end + 1));
 }
 
