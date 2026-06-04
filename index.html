@@ -551,17 +551,28 @@ function aiAv() {
 // ── FIX 2: removed pre-escaping so markdown renders correctly ──
 function mdToHtml(text) {
   if (!text) return '';
-  let s = text;
-  s = s.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
-       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-       .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>');
-  return s.split(/\n\n+/).filter(b=>b.trim()).map(block => {
+  let s = String(text);
+  // Process paragraph by paragraph
+  return s.split(/\n\n+/).filter(b => b.trim()).map(block => {
     const lines = block.trim().split('\n');
-    const isList = lines.every(l => /^[-*•] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
+    // Detect bullet list (lines starting with - * • or 1.)
+    const isList = lines.length > 1 && lines.every(l =>
+      /^[\-\*•] /.test(l.trim()) || /^\d+\.\s/.test(l.trim())
+    );
     if (isList) {
-      return `<ul style="padding-left:20px;margin:6px 0">${lines.filter(l=>l.trim()).map(l=>`<li>${l.replace(/^[-*•] /,'').replace(/^\d+\. /,'')}</li>`).join('')}</ul>`;
+      const items = lines.filter(l => l.trim()).map(l => {
+        let t = l.replace(/^[\-\*•] /, '').replace(/^\d+\.\s/, '');
+        t = t.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        return `<li>${t}</li>`;
+      });
+      return `<ul style="padding-left:20px;margin:6px 0">${items.join('')}</ul>`;
     }
-    return `<p>${lines.join('<br>')}</p>`;
+    // Plain paragraph — apply inline markdown only (no bullet interference)
+    let para = lines.join('<br>');
+    para = para.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+               .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return `<p>${para}</p>`;
   }).join('');
 }
 
