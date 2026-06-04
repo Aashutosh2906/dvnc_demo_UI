@@ -42,7 +42,10 @@ function extractJSON(raw) {
   if (start === -1 || end === -1 || end <= start) {
     throw new Error('No JSON object found in response');
   }
-  return JSON.parse(s.slice(start, end + 1));
+
+  let jsonStr = s.slice(start, end + 1);
+  jsonStr = jsonStr.replace(/,(\s*[}\]])/g, '$1'); // strip trailing commas
+  return JSON.parse(jsonStr);
 }
 
 const SIMPLE_SYSTEM_PROMPT = `You are DVNC, a brilliant polymath AI inspired by Leonardo da Vinci. You are warm, intellectually curious, and direct.
