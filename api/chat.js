@@ -1,5 +1,5 @@
 // DVNC.AI Chat API
-// Vercel serverless function — handles both simple and deep queries
+// Vercel serverless function — ALL queries run through the deep lens pipeline
 
 const { callLLM } = require('../lib/llm');
 const { MASTER_SYSTEM_PROMPT } = require('../lib/agents');
@@ -10,23 +10,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
   'Content-Type': 'application/json',
 };
-
-// Fast local classifier — no LLM call needed
-function isSimpleQuery(msg) {
-  const m = msg.trim().toLowerCase();
-  if (m.split(' ').length < 6) return true;
-  const simplePatterns = [
-    /^(hi|hello|hey|yo|sup|howdy)/,
-    /^(thanks|thank you|thx|ty)/,
-    /^(yes|no|ok|okay|sure|got it|makes sense|interesting|cool|great|nice|awesome)/,
-    /^(what is your name|who are you|what can you do|what are you)/,
-    /^(what'?s? (dvnc|this|that))/,
-    /^(how are you|are you (an )?ai|are you human)/,
-    /^(good (morning|afternoon|evening|night))/,
-    /^(bye|goodbye|see you|cya)/,
-  ];
-  return simplePatterns.some(p => p.test(m));
-}
 
 // Strips markdown code fences then finds JSON by brace counting
 function extractJSON(raw) {
@@ -47,12 +30,6 @@ function extractJSON(raw) {
   jsonStr = jsonStr.replace(/,(\s*[}\]])/g, '$1'); // strip trailing commas
   return JSON.parse(jsonStr);
 }
-
-const SIMPLE_SYSTEM_PROMPT = `You are DVNC, a brilliant polymath AI inspired by Leonardo da Vinci. You are warm, intellectually curious, and direct.
-
-For simple conversational messages, greetings, or straightforward questions: respond naturally and concisely. Be concise — 2-5 sentences maximum unless a longer answer is clearly needed.
-
-Do NOT use JSON. Respond in plain natural language. Light markdown is fine (bold, italics) but avoid heavy formatting for simple responses.`;
 
 module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') {
@@ -86,63 +63,50 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const classification = isSimpleQuery(userMessage) ? 'simple' : 'deep';
-
     const conversationMessages = [
       ...history,
       { role: 'user', content: userMessage.trim() },
     ];
 
-    if (classification === 'simple') {
-      const responseText = await callLLM({
-        systemPrompt: SIMPLE_SYSTEM_PROMPT,
-        messages: conversationMessages,
-        maxTokens: 300,
-        temperature: 0.7,
-      });
+    // ALL queries go through the deep lens pipeline — no classifier
+    const rawResponse = await callLLM({
+      systemPrompt: MASTER_SYSTEM_PROMPT,
+      messages: conversationMessages,
+      maxTokens: 4000,
+      temperature: 0.8,
+    });
 
+    let parsed;
+    try {
+      parsed = extractJSON(rawResponse);
+    } catch (parseErr) {
+      console.error('JSON parse failed:', parseErr.message);
+      // Even on parse failure, wrap raw text into a valid deep response shell
+      // so the frontend always renders the full UI — never plain text
       res.writeHead(200, CORS_HEADERS);
       res.end(JSON.stringify({
-        type: 'simple',
-        text: responseText.trim(),
-      }));
-
-    } else {
-      const rawResponse = await callLLM({
-        systemPrompt: MASTER_SYSTEM_PROMPT,
-        messages: conversationMessages,
-        maxTokens: 4000,
-        temperature: 0.8,
-      });
-
-      let parsed;
-      try {
-        parsed = extractJSON(rawResponse);
-      } catch (parseErr) {
-        console.error('JSON parse failed, returning as simple:', parseErr.message);
-        res.writeHead(200, CORS_HEADERS);
-        res.end(JSON.stringify({
-          type: 'simple',
-          text: rawResponse.trim(),
-        }));
-        return;
-      }
-
-      // The LLM already returns { type, synthesis, lenses, graph, ... }
-      // We flatten it directly — do NOT nest under "data" again.
-      // This ensures the frontend receives apiData.synthesis, apiData.lenses etc. directly.
-      const responsePayload = {
         type: 'deep',
-        synthesis:            parsed.synthesis            || '',
-        lenses:               parsed.lenses               || [],
-        graph:                parsed.graph                || { nodes: [], edges: [] },
-        experimental_outline: parsed.experimental_outline || [],
-        metrics:              parsed.metrics              || {},
-      };
-
-      res.writeHead(200, CORS_HEADERS);
-      res.end(JSON.stringify(responsePayload));
+        synthesis: rawResponse.trim(),
+        lenses: [],
+        graph: { nodes: [], edges: [] },
+        experimental_outline: [],
+        metrics: {},
+      }));
+      return;
     }
+
+    // Flatten LLM output directly — frontend reads apiData.synthesis etc.
+    const responsePayload = {
+      type: 'deep',
+      synthesis:            parsed.synthesis            || '',
+      lenses:               parsed.lenses               || [],
+      graph:                parsed.graph                || { nodes: [], edges: [] },
+      experimental_outline: parsed.experimental_outline || [],
+      metrics:              parsed.metrics              || {},
+    };
+
+    res.writeHead(200, CORS_HEADERS);
+    res.end(JSON.stringify(responsePayload));
 
   } catch (err) {
     console.error('Chat handler error:', err);
