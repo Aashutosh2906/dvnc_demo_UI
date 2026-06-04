@@ -86,7 +86,6 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Fast local classification — no extra LLM call
     const classification = isSimpleQuery(userMessage) ? 'simple' : 'deep';
 
     const conversationMessages = [
@@ -107,6 +106,7 @@ module.exports = async function handler(req, res) {
         type: 'simple',
         text: responseText.trim(),
       }));
+
     } else {
       const rawResponse = await callLLM({
         systemPrompt: MASTER_SYSTEM_PROMPT,
@@ -128,12 +128,22 @@ module.exports = async function handler(req, res) {
         return;
       }
 
-      res.writeHead(200, CORS_HEADERS);
-      res.end(JSON.stringify({
+      // The LLM already returns { type, synthesis, lenses, graph, ... }
+      // We flatten it directly — do NOT nest under "data" again.
+      // This ensures the frontend receives apiData.synthesis, apiData.lenses etc. directly.
+      const responsePayload = {
         type: 'deep',
-        data: parsed,
-      }));
+        synthesis:            parsed.synthesis            || '',
+        lenses:               parsed.lenses               || [],
+        graph:                parsed.graph                || { nodes: [], edges: [] },
+        experimental_outline: parsed.experimental_outline || [],
+        metrics:              parsed.metrics              || {},
+      };
+
+      res.writeHead(200, CORS_HEADERS);
+      res.end(JSON.stringify(responsePayload));
     }
+
   } catch (err) {
     console.error('Chat handler error:', err);
     res.writeHead(500, CORS_HEADERS);
