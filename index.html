@@ -91,14 +91,11 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .ai-name{font-size:.7rem;font-family:var(--font-m);color:var(--muted);
   letter-spacing:.10em;text-transform:uppercase;margin-bottom:8px}
 
-/* Simple bubble */
+/* Simple bubble (only for hard errors) */
 .simple-bub{background:var(--white);border:1px solid var(--line);border-radius:0 18px 18px 18px;
   padding:15px 18px;font-size:.93rem;line-height:1.7;color:var(--text);
   box-shadow:0 4px 16px rgba(26,31,78,.06);max-width:88%}
 .simple-bub p{margin-bottom:10px}.simple-bub p:last-child{margin-bottom:0}
-.simple-bub ul{padding-left:20px;margin:6px 0}.simple-bub li{margin-bottom:4px}
-.simple-bub strong{color:var(--navy);font-weight:600}
-.simple-bub em{font-style:italic;color:var(--navy-soft)}
 
 /* Eyebrow label */
 .eyebrow{font-family:var(--font-m);font-size:.67rem;letter-spacing:.17em;
@@ -180,8 +177,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .innov-body{padding:20px 22px}
 .synth-text{font-size:.93rem;line-height:1.76;color:var(--text)}
 .synth-text p{margin-bottom:14px}.synth-text p:last-child{margin-bottom:0}
-.synth-text strong{color:var(--navy);font-weight:600}
-.synth-text em{font-style:italic;color:var(--navy-soft)}
 .synth-text ul{padding-left:20px;margin:6px 0 12px}.synth-text li{margin-bottom:5px}
 .innov-metrics{display:flex;gap:8px;flex-wrap:wrap;
   padding:14px 22px 18px;border-top:1px solid var(--line)}
@@ -459,9 +454,9 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
             <h3>Self-Learning Knowledge Graph</h3>
           </div>
           <div class="gleg">
-            <span><i class="ldot" style="background:#ffd8b3;border:1px solid #de9e58"></i>query</span>
-            <span><i class="ldot" style="background:#d7f6f2;border:1px solid #4fb3a5"></i>paper</span>
-            <span><i class="ldot" style="background:#e7defe;border:1px solid #8f73d9"></i>uploaded PDF</span>
+            <span><i class="ldot" style="background:#ff7a1a;border:1px solid #c85000"></i>query</span>
+            <span><i class="ldot" style="background:#17b8a6;border:1px solid #0d9489"></i>paper</span>
+            <span><i class="ldot" style="background:#cce4ff;border:1px solid #4a7fcc"></i>uploaded PDF</span>
           </div>
         </div>
         <div class="gstage"><div class="gempty"><h4>No papers mapped yet</h4><p>Search by topic, title, DOI, or link, then select papers before graph ingestion.</p></div></div>
@@ -548,17 +543,20 @@ function aiAv() {
   return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
 }
 
-// ── FIX 2: removed pre-escaping so markdown renders correctly ──
+/* Hardened markdown → HTML renderer */
 function mdToHtml(text) {
   if (!text) return '';
   let s = String(text);
-  // Process paragraph by paragraph
+
   return s.split(/\n\n+/).filter(b => b.trim()).map(block => {
     const lines = block.trim().split('\n');
-    // Detect bullet list (lines starting with - * • or 1.)
-    const isList = lines.length > 1 && lines.every(l =>
-      /^[\-\*•] /.test(l.trim()) || /^\d+\.\s/.test(l.trim())
-    );
+
+    const isList =
+      lines.length > 1 &&
+      lines.every(l =>
+        /^[\-\*•] /.test(l.trim()) || /^\d+\.\s/.test(l.trim())
+      );
+
     if (isList) {
       const items = lines.filter(l => l.trim()).map(l => {
         let t = l.replace(/^[\-\*•] /, '').replace(/^\d+\.\s/, '');
@@ -568,7 +566,7 @@ function mdToHtml(text) {
       });
       return `<ul style="padding-left:20px;margin:6px 0">${items.join('')}</ul>`;
     }
-    // Plain paragraph — apply inline markdown only (no bullet interference)
+
     let para = lines.join('<br>');
     para = para.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -616,24 +614,34 @@ async function submitQ() {
   let apiData;
   try {
     const resp = await fetch('/api/chat', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ query: q, history })
     });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    apiData = await resp.json();
+    const raw = await resp.text();
+    try {
+      apiData = JSON.parse(raw);
+    } catch {
+      apiData = raw; // double-serialized or plain text
+    }
   } catch (err) {
-    apiData = { type:'simple', text:'Network error — please check your connection and try again.' };
+    apiData = { error: true, message: 'Network error — please check your connection and try again.' };
   }
 
-if (typeof apiData === 'string') {
-  try { apiData = JSON.parse(apiData); } catch(_) {}
-}
+  if (typeof apiData === 'string') {
+    try { apiData = JSON.parse(apiData); } catch (_) {
+      apiData = { type:'deep', synthesis: apiData, lenses:[], graph:{nodes:[],edges:[]}, experimental_outline:[], metrics:{} };
+    }
+  }
 
-const assistantText = apiData.synthesis || apiData.text || apiData.message || '';
-history.push({ role:'user', content:q });
-history.push({ role:'assistant', content:assistantText });
+  const assistantText = apiData.synthesis || apiData.text || apiData.message || '';
+  history.push({ role:'user', content:q });
+  history.push({ role:'assistant', content:assistantText });
 
-await runLensTrace(apiData);
+  if (apiData.error && !apiData.synthesis) {
+    renderSimple(apiData.message || 'Something went wrong.');
+  } else {
+    await runLensTrace(apiData);
   }
 }
 
@@ -707,16 +715,16 @@ function renderDeep(data) {
   const thr = document.getElementById('thread');
   const actEl = document.getElementById('actEl');
 
-  const graphSVG = buildDynamicGraph(data.graph&&data.graph.nodes ? data.graph.nodes : [],
-                                      data.graph&&data.graph.edges ? data.graph.edges : []);
-  const lensGrid  = buildLensGrid(data.lenses || []);
   let synthRaw = data.synthesis || '';
-if (typeof synthRaw !== 'string') synthRaw = String(synthRaw);
-// If it looks like the whole JSON was dumped into synthesis, show a fallback
-if (synthRaw.trim().startsWith('{') && synthRaw.includes('"lenses"')) {
-  synthRaw = 'Synthesis unavailable — please try again.';
-}
-const synthHTML = mdToHtml(synthRaw);
+  if (typeof synthRaw !== 'string') synthRaw = String(synthRaw);
+  if (synthRaw.trim().startsWith('{') && synthRaw.includes('"lenses"')) {
+    synthRaw = 'Synthesis unavailable — please try again.';
+  }
+  const synthHTML = mdToHtml(synthRaw);
+
+  const graphSVG = buildDynamicGraph(data.graph&&data.graph.nodes ? data.graph.nodes : [],
+                                     data.graph&&data.graph.edges ? data.graph.edges : []);
+  const lensGrid  = buildLensGrid(data.lenses || []);
   const metHTML   = buildMetrics(data.metrics || {});
   const expHTML   = buildExpOutline(data.experimental_outline || []);
 
