@@ -259,7 +259,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
   font-size:.83rem;color:var(--muted);font-family:var(--font-m)}
 
-/* === GRAPH TAB (UNCHANGED) === */
+/* === GRAPH TAB === */
 #tab-g{overflow-y:auto;background:var(--bg)}
 #tab-g::-webkit-scrollbar{width:4px}
 #tab-g::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
@@ -347,8 +347,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
       <circle cx="510" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
       <path id="tarc" d="M 115,430 A 285,285 0 0,1 685,430" fill="none"/>
       <text font-family="Cormorant Garamond,serif" font-size="14" fill="#1a1f4e" letter-spacing="2">
-        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined
-                  <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
+        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
       </text>
     </svg>
   </div>
@@ -416,7 +415,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   </div>
 </div>
 
-<!-- TAB 2 — UNCHANGED -->
+<!-- TAB 2 -->
 <div id="tab-g" class="tab-panel">
   <div class="gs">
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -549,9 +548,10 @@ function aiAv() {
   return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
 }
 
+// ── FIX 2: removed pre-escaping so markdown renders correctly ──
 function mdToHtml(text) {
   if (!text) return '';
-  let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let s = text;
   s = s.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
        .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
        .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>');
@@ -614,8 +614,8 @@ async function submitQ() {
     apiData = { type:'simple', text:'Network error — please check your connection and try again.' };
   }
 
-  const assistantText = apiData.type==='deep'
-    ? ((apiData.data||apiData).synthesis || '')
+  const assistantText = apiData.type === 'deep'
+    ? (apiData.synthesis || '')
     : (apiData.text || apiData.message || '');
   history.push({ role:'user', content:q });
   history.push({ role:'assistant', content:assistantText });
@@ -623,7 +623,8 @@ async function submitQ() {
   if (apiData.type === 'simple') {
     renderSimple(apiData.text || apiData.message || 'Something went wrong.');
   } else {
-    await runLensTrace(apiData.data || apiData);
+    // ── FIX 1: apiData is now flat (no .data wrapper) — pass directly ──
+    await runLensTrace(apiData);
   }
 }
 
@@ -804,7 +805,6 @@ function buildDynamicGraph(rawNodes, rawEdges) {
     return `<svg viewBox="0 0 760 100" style="width:100%;height:70px"><text x="380" y="55" text-anchor="middle" font-family="Instrument Sans,sans-serif" font-size="12" fill="#5a5f7a">Graph data unavailable.</text></svg>`;
   }
 
-  // Deduplicate nodes by label
   const seenL = new Set();
   const nodes = rawNodes.filter(n => {
     const k = (n.label||'').toLowerCase().trim();
@@ -817,7 +817,6 @@ function buildDynamicGraph(rawNodes, rawEdges) {
   const W = 840, H = 360, N = nodes.length;
   const hypI = nodes.findIndex(n => n.type === 'hypothesis');
 
-  // Initialize positions: hypothesis at center, others in circle
   const pos = nodes.map((n, i) => {
     if (n.type === 'hypothesis') return { x: W/2, y: H/2 };
     const angle = (2*Math.PI * i / N) - Math.PI/2;
@@ -828,7 +827,6 @@ function buildDynamicGraph(rawNodes, rawEdges) {
   const idxMap = {};
   nodes.forEach((n,i) => idxMap[n.id] = i);
 
-  // Fruchterman-Reingold layout
   const k = Math.sqrt(W * H / N) * 0.82;
   for (let it = 0; it < 160; it++) {
     const cool = Math.max(0.05, 1 - it/160);
