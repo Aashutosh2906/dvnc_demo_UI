@@ -48,7 +48,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
 .tab-panel.active{display:flex}
 
-/* === TAB 1 DISCOVERY === */
+/* === DISCOVERY TAB === */
 #tab-d{position:relative;background:var(--bg)}
 .bgwm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   pointer-events:none;z-index:0;overflow:hidden}
@@ -72,7 +72,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .ex-pill:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-soft)}
 
 /* Thread */
-.thread{display:flex;flex-direction:column;gap:0;max-width:960px;
+.thread{display:flex;flex-direction:column;gap:0;max-width:980px;
   margin:0 auto;padding:26px 22px 14px;min-height:100%}
 .msg{display:flex;flex-direction:column;gap:5px;animation:msgIn .32s ease}
 @keyframes msgIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
@@ -81,7 +81,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   color:#fff;padding:13px 17px;border-radius:19px 19px 4px 19px;max-width:70%;
   font-size:.93rem;line-height:1.6;box-shadow:0 4px 18px rgba(26,31,78,.17)}
 .msg-ts{font-size:.69rem;color:var(--muted);font-family:var(--font-m)}
-.msg-ai{align-items:flex-start;margin-bottom:22px}
+.msg-ai{align-items:flex-start;margin-bottom:24px}
 .ai-row{display:flex;gap:11px;max-width:100%;width:100%}
 .ai-av{width:33px;height:33px;border-radius:9px;
   background:linear-gradient(135deg,rgba(255,102,0,.11),rgba(23,184,166,.09));
@@ -89,124 +89,122 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .ai-av svg{width:15px;height:15px;color:var(--gold)}
 .ai-body{flex:1;min-width:0}
 .ai-name{font-size:.7rem;font-family:var(--font-m);color:var(--muted);
-  letter-spacing:.10em;text-transform:uppercase;margin-bottom:7px}
+  letter-spacing:.10em;text-transform:uppercase;margin-bottom:8px}
 
-/* Simple response bubble */
+/* Simple bubble */
 .simple-bub{background:var(--white);border:1px solid var(--line);border-radius:0 18px 18px 18px;
   padding:15px 18px;font-size:.93rem;line-height:1.7;color:var(--text);
   box-shadow:0 4px 16px rgba(26,31,78,.06);max-width:88%}
-.simple-bub p{margin-bottom:10px}
-.simple-bub p:last-child{margin-bottom:0}
-.simple-bub ul{padding-left:20px;margin:6px 0}
-.simple-bub li{margin-bottom:4px}
+.simple-bub p{margin-bottom:10px}.simple-bub p:last-child{margin-bottom:0}
+.simple-bub ul{padding-left:20px;margin:6px 0}.simple-bub li{margin-bottom:4px}
 .simple-bub strong{color:var(--navy);font-weight:600}
 .simple-bub em{font-style:italic;color:var(--navy-soft)}
 
-/* Response card */
-.rcard{background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden;
-  box-shadow:0 8px 30px rgba(26,31,78,.07)}
-.rsec{padding:20px 22px;border-bottom:1px solid var(--line)}
-.rsec:last-child{border-bottom:none}
+/* Eyebrow label */
 .eyebrow{font-family:var(--font-m);font-size:.67rem;letter-spacing:.17em;
-  text-transform:uppercase;color:var(--gold);margin-bottom:6px}
-.sec-title{font-family:var(--font-d);font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:12px}
+  text-transform:uppercase;color:var(--gold);margin-bottom:5px;display:block}
+
+/* Section card */
+.sec-card{background:var(--white);border:1px solid var(--line);border-radius:18px;
+  padding:18px 20px;box-shadow:0 4px 16px rgba(26,31,78,.05);margin-top:10px}
 
 /* Knowledge Graph */
 .c-box{background:linear-gradient(180deg,rgba(248,247,244,.85),rgba(255,255,255,.65));
-  border:1px solid rgba(26,31,78,.07);border-radius:16px;overflow:hidden;width:100%}
+  border:1px solid rgba(26,31,78,.06);border-radius:14px;overflow:hidden;margin-top:10px}
 .c-box svg{width:100%;display:block}
-.c-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;
-  font-size:.75rem;color:var(--muted);font-family:var(--font-m)}
-.ldot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.c-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;
+  font-size:.74rem;color:var(--muted);font-family:var(--font-m)}
+.ldot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
-/* Synthesis */
-.synthesis-wrap{display:flex;gap:13px;align-items:flex-start}
-.synth-icon{width:37px;height:37px;border-radius:11px;background:var(--gold-soft);
-  border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0;margin-top:3px}
-.synth-icon svg{width:15px;height:15px;color:var(--gold)}
-.synth-text{font-size:.93rem;line-height:1.72;color:var(--text);flex:1}
-.synth-text p{margin-bottom:13px}
-.synth-text p:last-child{margin-bottom:0}
-.synth-text strong{color:var(--navy);font-weight:600}
-.synth-text em{font-style:italic;color:var(--navy-soft)}
-.synth-text ul{padding-left:20px;margin:6px 0 10px}
-.synth-text li{margin-bottom:5px}
+/* Horizontal lens chips (loading) */
+.lchips-wrap{background:var(--white);border:1px solid var(--line);border-radius:16px;
+  padding:16px 18px;margin-top:8px}
+.lchips-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.lchip{display:flex;align-items:center;gap:5px;padding:5px 10px;
+  border:1px solid var(--line);border-radius:999px;
+  font-size:.71rem;font-family:var(--font-m);color:var(--muted);
+  background:rgba(26,31,78,.02);transition:all .28s;white-space:nowrap}
+.lchip .cn{font-weight:700;font-size:.66rem}
+.lchip.active{border-color:rgba(255,102,0,.4);color:var(--gold);
+  background:var(--gold-soft);animation:cpulse 1.1s ease-in-out infinite}
+@keyframes cpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,102,0,.1)}
+  50%{box-shadow:0 0 0 5px rgba(255,102,0,.03)}}
+.lchip.done{border-color:rgba(23,184,166,.4);color:var(--teal);background:rgba(23,184,166,.07)}
+.lchip.done .cn::before{content:'✓ '}
+.chip-status{display:flex;align-items:center;gap:8px;font-size:.79rem;
+  color:var(--muted);font-family:var(--font-m)}
 
-/* Metrics */
-.metrics-row{display:flex;gap:9px;flex-wrap:wrap}
-.mpill{flex:1;min-width:90px;border:1px solid var(--line);border-radius:13px;
-  padding:10px 13px;text-align:center;background:rgba(248,247,244,.6)}
-.mval{font-family:var(--font-m);font-size:1.15rem;font-weight:500;color:var(--navy);display:block}
-.mlbl{font-size:.68rem;color:var(--muted);font-family:var(--font-m);
-  letter-spacing:.06em;text-transform:uppercase}
-
-/* Experimental Outline */
-.exp-steps{display:flex;flex-direction:column;gap:0}
-.exp-step{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;
-  padding:12px 0;border-bottom:1px solid var(--line)}
-.exp-step:last-child{border-bottom:none;padding-bottom:0}
-.exp-num{width:36px;height:36px;border-radius:11px;background:rgba(255,102,0,.08);
-  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
-  font-weight:700;font-size:.84rem;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
-.exp-copy h5{font-size:.9rem;color:var(--navy);margin:0 0 5px;font-weight:600}
-.exp-copy p{font-size:.83rem;color:var(--muted);line-height:1.6;margin:0}
-
-/* 10 Cognitive Lenses */
-.lens-section{padding:18px 22px 22px}
-.lens-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;
-  color:var(--muted);font-family:var(--font-m);letter-spacing:.07em;text-transform:uppercase;
-  border:none;background:none;padding:0;user-select:none;transition:color .2s}
-.lens-toggle:hover{color:var(--navy)}
-.latarrow{transition:transform .25s;display:inline-block;font-size:.9rem}
-.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.lens-card{border:1px solid var(--line);border-radius:14px;background:var(--white);
-  overflow:hidden;transition:border-color .2s,box-shadow .2s}
-.lens-card:hover{border-color:rgba(255,102,0,.18)}
-.lens-card.open{border-color:rgba(255,102,0,.30);box-shadow:0 4px 16px rgba(255,102,0,.07)}
-.lens-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
-.lens-num{width:28px;height:28px;border-radius:8px;background:rgba(255,102,0,.08);
-  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
-  font-size:.7rem;font-weight:700;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
-.lens-title-col{flex:1;min-width:0}
-.lens-name{font-size:.86rem;font-weight:600;color:var(--navy);display:block}
-.lens-preview{font-size:.72rem;color:var(--muted);font-family:var(--font-m);
-  display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.lens-chev{color:var(--muted);transition:transform .22s;font-size:.75rem;flex-shrink:0}
-.lens-card.open .lens-chev{transform:rotate(180deg);color:var(--gold)}
-.lens-body{display:none;padding:0 14px 14px;border-top:1px solid var(--line);
-  font-size:.84rem;line-height:1.65;color:var(--text);padding-top:12px}
-.lens-card.open .lens-body{display:block}
-
-/* Thinking */
-.thinking{display:flex;align-items:center;gap:9px;padding:11px 15px;
-  background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
-  font-size:.83rem;color:var(--muted);font-family:var(--font-m)}
+/* Thinking dots */
 .tdots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);
   margin:0 2px;animation:tdot .9s ease-in-out infinite}
 .tdots span:nth-child(2){animation-delay:.15s}.tdots span:nth-child(3){animation-delay:.30s}
 @keyframes tdot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
 
-/* Reasoning trace */
-.active-split{display:grid;grid-template-columns:1fr 280px;gap:0;width:100%}
-.trace-panel{border-left:1px solid var(--line);background:rgba(255,255,255,.7);
-  backdrop-filter:blur(8px);padding:16px 14px;overflow-y:auto;max-height:360px}
-.trace-hdr{font-family:var(--font-m);font-size:.68rem;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-.trace-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px;
-  animation:trIn .38s ease}
-@keyframes trIn{from{opacity:0;transform:translateX(7px)}to{opacity:1;transform:translateX(0)}}
-.tn{width:26px;height:26px;border-radius:7px;background:rgba(255,102,0,.09);
-  border:1px solid rgba(255,102,0,.19);font-size:.66rem;font-weight:700;color:var(--gold);
-  display:grid;place-items:center;flex-shrink:0;font-family:var(--font-m)}
-.tt h5{font-size:.78rem;color:var(--navy);margin-bottom:2px;font-weight:600}
-.tt p{font-size:.72rem;color:var(--muted);line-height:1.45}
-.trace-step.pend .tn{background:rgba(26,31,78,.05);border-color:var(--line);color:var(--muted)}
-.trace-step.pend .tt h5{color:var(--muted)}
+/* Lens contribution grid */
+.contrib-hdr{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.contrib-hint{font-size:.71rem;color:var(--muted);font-family:var(--font-m)}
+.lc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.lc-card{border:1px solid var(--line);border-radius:13px;background:var(--white);
+  overflow:hidden;transition:border-color .2s}
+.lc-card:hover{border-color:rgba(255,102,0,.2)}
+.lc-head{display:flex;align-items:center;gap:8px;padding:11px 13px 9px}
+.lc-num{width:26px;height:26px;border-radius:7px;background:rgba(255,102,0,.08);
+  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
+  font-size:.67rem;font-weight:700;color:var(--gold);font-family:var(--font-m);flex-shrink:0}
+.lc-name{font-size:.83rem;font-weight:600;color:var(--navy);flex:1;min-width:0}
+.lc-ibtn{width:22px;height:22px;border-radius:6px;border:1px solid var(--line);
+  background:transparent;cursor:pointer;font-size:.75rem;color:var(--muted);
+  display:grid;place-items:center;flex-shrink:0;transition:all .18s;line-height:1}
+.lc-ibtn:hover{border-color:var(--teal);color:var(--teal);background:rgba(23,184,166,.07)}
+.lc-about{display:none;margin:0 13px;padding:9px 0 9px;
+  border-top:1px dashed rgba(26,31,78,.1);
+  font-size:.76rem;color:var(--muted);line-height:1.56;font-style:italic}
+.lc-card.aopen .lc-about{display:block}
+.lc-contrib{padding:9px 13px 13px;border-top:1px solid var(--line);
+  font-size:.85rem;line-height:1.63;color:var(--text)}
+
+/* Innovation synthesis card */
+.innov-card{background:var(--white);border:1px solid var(--line);border-radius:18px;
+  overflow:hidden;box-shadow:0 10px 36px rgba(26,31,78,.08);
+  border-left:4px solid var(--gold);margin-top:10px}
+.innov-hdr{display:flex;align-items:flex-start;gap:13px;padding:18px 22px 16px;
+  background:linear-gradient(135deg,rgba(255,102,0,.04),transparent);
+  border-bottom:1px solid var(--line)}
+.innov-hdr-icon{width:40px;height:40px;border-radius:12px;background:var(--gold-soft);
+  border:1px solid rgba(255,102,0,.19);display:grid;place-items:center;flex-shrink:0}
+.innov-hdr-icon svg{width:17px;height:17px;color:var(--gold)}
+.innov-title{font-family:var(--font-d);font-size:1.28rem;font-weight:600;color:var(--navy)}
+.innov-sub{font-size:.71rem;color:var(--muted);font-family:var(--font-m);
+  letter-spacing:.05em;margin-top:3px}
+.innov-body{padding:20px 22px}
+.synth-text{font-size:.93rem;line-height:1.76;color:var(--text)}
+.synth-text p{margin-bottom:14px}.synth-text p:last-child{margin-bottom:0}
+.synth-text strong{color:var(--navy);font-weight:600}
+.synth-text em{font-style:italic;color:var(--navy-soft)}
+.synth-text ul{padding-left:20px;margin:6px 0 12px}.synth-text li{margin-bottom:5px}
+.innov-metrics{display:flex;gap:8px;flex-wrap:wrap;
+  padding:14px 22px 18px;border-top:1px solid var(--line)}
+.mpill{flex:1;min-width:88px;border:1px solid var(--line);border-radius:12px;
+  padding:10px 12px;text-align:center;background:rgba(248,247,244,.6)}
+.mval{font-family:var(--font-m);font-size:1.15rem;font-weight:500;color:var(--navy);display:block}
+.mlbl{font-size:.67rem;color:var(--muted);font-family:var(--font-m);
+  letter-spacing:.06em;text-transform:uppercase;display:block;margin-top:2px}
+.innov-exp{padding:14px 22px 20px;border-top:1px solid var(--line)}
+.exp-steps{display:flex;flex-direction:column;gap:0}
+.exp-step{display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;
+  padding:11px 0;border-bottom:1px solid var(--line)}
+.exp-step:last-child{border-bottom:none;padding-bottom:0}
+.exp-num{width:34px;height:34px;border-radius:10px;background:rgba(255,102,0,.08);
+  border:1px solid rgba(255,102,0,.17);display:grid;place-items:center;
+  font-weight:700;font-size:.82rem;color:var(--gold);font-family:var(--font-m)}
+.exp-copy h5{font-size:.88rem;color:var(--navy);margin:0 0 4px;font-weight:600}
+.exp-copy p{font-size:.82rem;color:var(--muted);line-height:1.6;margin:0}
 
 /* CHAT BAR */
 .bar-wrap{flex-shrink:0;padding:13px 22px 17px;background:rgba(248,247,244,.93);
   backdrop-filter:blur(14px);border-top:1px solid var(--line);position:relative;z-index:10}
-.bar{max-width:960px;margin:0 auto;display:flex;align-items:flex-end;gap:9px;
+.bar{max-width:980px;margin:0 auto;display:flex;align-items:flex-end;gap:9px;
   background:var(--white);border:1.5px solid var(--line-med);border-radius:17px;
   padding:9px 11px 9px 15px;box-shadow:0 4px 18px rgba(26,31,78,.07);
   transition:border-color .2s,box-shadow .2s}
@@ -215,11 +213,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .bar-input{flex:1;border:none;outline:none;background:transparent;font-family:var(--font-b);
   font-size:.93rem;color:var(--text);resize:none;min-height:24px;max-height:120px;line-height:1.5}
 .bar-input::placeholder{color:var(--muted)}
-.up-btn{width:31px;height:31px;border-radius:9px;border:1px solid var(--line);
+.icon-btn{width:31px;height:31px;border-radius:9px;border:1px solid var(--line);
   background:transparent;cursor:pointer;display:grid;place-items:center;
   color:var(--muted);transition:all .2s;flex-shrink:0}
-.up-btn:hover{border-color:var(--navy-soft);color:var(--navy)}
-.up-btn svg{width:13px;height:13px}
+.icon-btn:hover{border-color:var(--navy-soft);color:var(--navy)}
+.icon-btn svg{width:13px;height:13px}
+.icon-btn.new-chat:hover{border-color:var(--teal);color:var(--teal)}
 .mpill-btn{display:flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--line-med);
   border-radius:999px;background:rgba(26,31,78,.04);cursor:pointer;font-size:.78rem;
   font-family:var(--font-m);color:var(--navy);transition:all .2s;white-space:nowrap;position:relative}
@@ -255,34 +254,30 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .send-btn:disabled{opacity:.43;cursor:not-allowed;transform:none}
 .send-btn svg{width:15px;height:15px;color:#fff}
 
-/* === TAB 2 GRAPH (UNCHANGED) === */
+/* Thinking */
+.thinking{display:flex;align-items:center;gap:9px;padding:11px 15px;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:15px;
+  font-size:.83rem;color:var(--muted);font-family:var(--font-m)}
+
+/* === GRAPH TAB (UNCHANGED) === */
 #tab-g{overflow-y:auto;background:var(--bg)}
 #tab-g::-webkit-scrollbar{width:4px}
 #tab-g::-webkit-scrollbar-thumb{background:rgba(26,31,78,.13);border-radius:4px}
 .gs{max-width:1380px;margin:0 auto;padding:22px;display:grid;grid-template-columns:370px 1fr;gap:18px;min-height:100%}
 .gp{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:19px}
 .gp h3{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin-bottom:14px}
-.glbl{display:block;font-size:.77rem;font-family:var(--font-m);color:var(--muted);
-  text-transform:uppercase;letter-spacing:.10em;margin-bottom:5px;margin-top:13px}
-.ginput{width:100%;padding:9px 13px;border:1.5px solid var(--line-med);border-radius:11px;
-  font-family:var(--font-b);font-size:.87rem;color:var(--text);background:transparent;
-  outline:none;resize:vertical;min-height:76px;transition:border-color .2s}
+.glbl{display:block;font-size:.77rem;font-family:var(--font-m);color:var(--muted);text-transform:uppercase;letter-spacing:.10em;margin-bottom:5px;margin-top:13px}
+.ginput{width:100%;padding:9px 13px;border:1.5px solid var(--line-med);border-radius:11px;font-family:var(--font-b);font-size:.87rem;color:var(--text);background:transparent;outline:none;resize:vertical;min-height:76px;transition:border-color .2s}
 .ginput:focus{border-color:rgba(255,102,0,.33)}
-.gselect{width:100%;padding:8px 12px;border:1.5px solid var(--line-med);border-radius:11px;
-  font-family:var(--font-b);font-size:.87rem;color:var(--text);background:var(--white);
-  outline:none;transition:border-color .2s}
+.gselect{width:100%;padding:8px 12px;border:1.5px solid var(--line-med);border-radius:11px;font-family:var(--font-b);font-size:.87rem;color:var(--text);background:var(--white);outline:none;transition:border-color .2s}
 .gselect:focus{border-color:rgba(255,102,0,.33)}
 .gchks{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
-.cchk{display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--line-med);
-  border-radius:999px;font-size:.75rem;font-family:var(--font-m);color:var(--navy-soft);
-  cursor:pointer;background:rgba(255,255,255,.8);transition:all .18s;user-select:none}
+.cchk{display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--line-med);border-radius:999px;font-size:.75rem;font-family:var(--font-m);color:var(--navy-soft);cursor:pointer;background:rgba(255,255,255,.8);transition:all .18s;user-select:none}
 .cchk.on{border-color:var(--teal);background:rgba(23,184,166,.08);color:#0b6f66}
 .cchk input{display:none}
 .gbtn-row{display:flex;gap:9px;margin-top:14px}
-.gbtn{flex:1;padding:9px 13px;border-radius:12px;font-family:var(--font-b);
-  font-size:.84rem;cursor:pointer;transition:all .2s;font-weight:500}
-.gbtn.pri{background:linear-gradient(135deg,rgba(255,102,0,.93),rgba(240,90,12,.93));
-  color:#fff;border:none;box-shadow:0 2px 9px rgba(255,102,0,.19)}
+.gbtn{flex:1;padding:9px 13px;border-radius:12px;font-family:var(--font-b);font-size:.84rem;cursor:pointer;transition:all .2s;font-weight:500}
+.gbtn.pri{background:linear-gradient(135deg,rgba(255,102,0,.93),rgba(240,90,12,.93));color:#fff;border:none;box-shadow:0 2px 9px rgba(255,102,0,.19)}
 .gbtn.pri:hover{box-shadow:0 4px 14px rgba(255,102,0,.32);transform:translateY(-1px)}
 .gbtn.sec{background:var(--white);color:var(--navy);border:1.5px solid var(--line-med)}
 .gbtn.sec:hover{border-color:var(--navy-soft)}
@@ -291,30 +286,23 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
 .gviz-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:11px}
 .gviz-hdr h3{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin:0}
 .gleg{display:flex;gap:11px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);font-family:var(--font-m)}
-.gstage{border:1px solid rgba(26,31,78,.06);border-radius:14px;
-  background:linear-gradient(180deg,rgba(248,247,244,.8),rgba(255,255,255,.6));
-  min-height:370px;display:flex;align-items:center;justify-content:center}
+.gstage{border:1px solid rgba(26,31,78,.06);border-radius:14px;background:linear-gradient(180deg,rgba(248,247,244,.8),rgba(255,255,255,.6));min-height:370px;display:flex;align-items:center;justify-content:center}
 .gempty{text-align:center;max-width:370px;padding:22px}
 .gempty h4{font-family:var(--font-d);font-size:1.08rem;font-weight:600;color:var(--navy);margin-bottom:7px}
 .gempty p{font-size:.86rem;color:var(--muted);line-height:1.58}
 .jgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.jcard{border:1px solid var(--line);border-radius:14px;padding:13px;display:flex;
-  justify-content:space-between;align-items:center;gap:9px;background:var(--white);
-  text-decoration:none;color:inherit;transition:border-color .18s}
+.jcard{border:1px solid var(--line);border-radius:14px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:9px;background:var(--white);text-decoration:none;color:inherit;transition:border-color .18s}
 .jcard:hover{border-color:rgba(26,31,78,.26)}
 .jcard h4{font-size:.88rem;color:var(--navy);margin-bottom:3px}
 .jcard p{font-size:.77rem;color:var(--muted);line-height:1.43;margin:0}
 .jopen{font-size:.74rem;font-family:var(--font-m);color:var(--muted);white-space:nowrap}
-.dropzone{border:1.5px dashed rgba(26,31,78,.17);border-radius:11px;padding:13px;
-  text-align:center;background:rgba(255,255,255,.5);cursor:pointer}
+.dropzone{border:1.5px dashed rgba(26,31,78,.17);border-radius:11px;padding:13px;text-align:center;background:rgba(255,255,255,.5);cursor:pointer}
 .dropzone svg{width:20px;height:20px;color:var(--muted);display:block;margin:0 auto 5px}
 .dropzone span{font-size:.79rem;color:var(--muted)}
 
 @media(max-width:900px){
-  .lens-grid{grid-template-columns:1fr}
+  .lc-grid{grid-template-columns:1fr}
   .gs{grid-template-columns:1fr}
-  .active-split{grid-template-columns:1fr}
-  .trace-panel{display:none}
 }
 </style>
 </head>
@@ -338,7 +326,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   <div class="nav-status"><span class="sdot"></span><span>Live orchestration</span></div>
 </nav>
 
-<!-- TAB 1 DISCOVERY -->
 <div id="tab-d" class="tab-panel active">
   <div class="bgwm">
     <svg viewBox="0 0 800 900" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -358,27 +345,10 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
       <circle cx="338" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
       <circle cx="424" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
       <circle cx="510" cy="552" r="46" fill="#1a1f4e" opacity=".5"/>
-      <line x1="400" y1="358" x2="308" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="400" y1="358" x2="400" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="400" y1="358" x2="492" y2="399" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="308" y1="473" x2="252" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="400" y1="473" x2="338" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="400" y1="473" x2="424" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
-      <line x1="492" y1="473" x2="510" y2="506" stroke="#1a1f4e" stroke-width=".9"/>
-      <circle cx="98"  cy="195" r="5" fill="#1a1f4e"/><circle cx="158" cy="330" r="4" fill="#1a1f4e"/>
-      <circle cx="76"  cy="470" r="4" fill="#1a1f4e"/><circle cx="702" cy="175" r="5" fill="#1a1f4e"/>
-      <circle cx="738" cy="358" r="4" fill="#1a1f4e"/><circle cx="682" cy="502" r="4" fill="#1a1f4e"/>
-      <circle cx="198" cy="682" r="4" fill="#1a1f4e"/><circle cx="602" cy="702" r="5" fill="#1a1f4e"/>
-      <text x="282" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">SYSTEMS THINKING</text>
-      <text x="400" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">CROSS-DOMAIN AI</text>
-      <text x="518" y="496" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">POLYMATHIC INTELLIGENCE</text>
-      <text x="252" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">QUANTUM</text>
-      <text x="338" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">NEURAL</text>
-      <text x="424" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">GOLDEN RATIO</text>
-      <text x="510" y="614" font-family="Instrument Sans,sans-serif" font-size="9" fill="#1a1f4e" text-anchor="middle">FUTURE AI</text>
       <path id="tarc" d="M 115,430 A 285,285 0 0,1 685,430" fill="none"/>
       <text font-family="Cormorant Garamond,serif" font-size="14" fill="#1a1f4e" letter-spacing="2">
-        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
+        <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined
+                  <textPath href="#tarc" startOffset="9%">Leonardo's Intelligence. Reimagined for the 21st Century.</textPath>
       </text>
     </svg>
   </div>
@@ -401,7 +371,13 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
     <div class="bar">
       <textarea class="bar-input" id="chatInput" placeholder="Ask DVNC.AI anything…" rows="1"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-      <button class="up-btn" title="Upload PDF">
+      <button class="icon-btn new-chat" id="newChatBtn" style="display:none" onclick="newConversation()" title="New conversation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+      <button class="icon-btn" title="Upload PDF">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
@@ -440,7 +416,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
   </div>
 </div>
 
-<!-- TAB 2 GRAPH — COMPLETELY UNCHANGED -->
+<!-- TAB 2 — UNCHANGED -->
 <div id="tab-g" class="tab-panel">
   <div class="gs">
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -501,42 +477,49 @@ html,body{height:100%;background:var(--bg);font-family:var(--font-b);color:var(-
           <a class="jcard" href="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=biomaterials" target="_blank"><div><h4>IEEE Xplore</h4><p>Engineering, AI, signal processing, and systems.</p></div><span class="jopen">Open →</span></a>
         </div>
       </div>
-      <div class="gp"><h3>PDF Parse Status</h3><p style="font-size:.85rem;color:var(--muted)">Awaiting upload. Parsed structure will appear here.</p></div>
+      <div class="gp"><h3>PDF Parse Status</h3><p style="font-size:.85rem;color:var(--muted)">Awaiting upload.</p></div>
     </div>
   </div>
 </div>
 
 </div>
-
 <script>
-// ─── STATE ────────────────────────────────────────────────────────────────────
 let curModel = 'DVNC Sovereign';
 let busy = false;
 let history = [];
 
-// ─── LENS TRACE DEFINITIONS ───────────────────────────────────────────────────
 const LENS_TRACE = [
-  { num: '01', name: 'The Geometer',      status: 'Identifying mathematical structure and underlying ratios…' },
-  { num: '02', name: 'The Analogist',     status: 'Mapping structural isomorphisms across distant domains…' },
-  { num: '03', name: 'The Steward',       status: 'Evaluating systemic thresholds and planetary implications…' },
-  { num: '04', name: 'The Probabilist',   status: 'Probing determinism vs. probabilistic boundaries…' },
-  { num: '05', name: 'The Dialectician',  status: 'Weighing theory against empirical evidence…' },
-  { num: '06', name: 'The Intuitionist',  status: 'Detecting structural intuitions before calculation…' },
-  { num: '07', name: 'The Respecter',     status: 'Assessing forces, scale thresholds, and redirections…' },
-  { num: '08', name: 'The Collaborator',  status: 'Finding paths that work with natural system logic…' },
-  { num: '09', name: 'The Perceptualist', status: 'Examining perceptual biases and anomalous signals…' },
-  { num: '10', name: 'The Questioner',    status: 'Uncovering unknown unknowns beneath the question…' },
+  { num:'01', name:'The Geometer' },
+  { num:'02', name:'The Naturalist' },
+  { num:'03', name:'The Engineer' },
+  { num:'04', name:'The Philosopher' },
+  { num:'05', name:'The Historian' },
+  { num:'06', name:'The Artist' },
+  { num:'07', name:'The Mystic' },
+  { num:'08', name:'The Economist' },
+  { num:'09', name:'The Systems Thinker' },
+  { num:'10', name:'The Futurist' },
 ];
 
-// ─── TABS ─────────────────────────────────────────────────────────────────────
+const LENS_INFO = {
+  1: 'Finds the mathematical and structural skeleton beneath surface phenomena — symmetry, topology, scaling laws, fractals, and optimization principles.',
+  2: 'Grounds insights in biological and ecological reality — evolutionary pressures, emergent behaviors, ecosystem dynamics, and biomimicry opportunities.',
+  3: 'Designs solutions through mechanisms, feedback loops, constraints, and failure modes — asking how to build this and where the stress fractures lie.',
+  4: 'Interrogates first principles and hidden assumptions — examining ontological categories, ethical implications, and epistemological limits.',
+  5: 'Places phenomena in deep time — finding analogous historical moments, tracing genealogies of ideas, and learning from forgotten precedents.',
+  6: 'Finds the aesthetic dimension — beauty, tension, negative space, rhythm, and metaphor that reveal what analysis conceals.',
+  7: 'Accesses non-linear, contemplative knowing — paradox, liminality, and the ineffable that lies between categories.',
+  8: 'Maps flows of value, incentives, and power — who benefits, who bears costs, and what feedback loops drive behavior.',
+  9: 'Sees the whole system — feedback loops, emergent properties, tipping points, leverage points, and unintended consequences.',
+  10: 'Projects into adjacent possibles and long-range futures — weak signals, technological trajectories, scenario branches, and wild cards.',
+};
+
 function switchTab(id, btn) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-' + id).classList.add('active');
 }
-
-// ─── MODEL ────────────────────────────────────────────────────────────────────
 function toggleMDrop() {
   document.getElementById('mDrop').classList.toggle('open');
   document.getElementById('mpBtn').classList.toggle('open');
@@ -555,54 +538,52 @@ document.addEventListener('click', e => {
     document.getElementById('mpBtn').classList.remove('open');
   }
 });
-
-// ─── INPUT ────────────────────────────────────────────────────────────────────
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
-function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitQ(); } }
-function fillQ(t) { const i = document.getElementById('chatInput'); i.value = t; autoResize(i); i.focus(); }
-
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-function scrollC() { const a = document.getElementById('chatArea'); if (a) a.scrollTop = a.scrollHeight; }
-function ts() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function handleKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); submitQ(); } }
+function fillQ(t) { const i=document.getElementById('chatInput'); i.value=t; autoResize(i); i.focus(); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function delay(ms) { return new Promise(r=>setTimeout(r,ms)); }
+function scrollC() { const a=document.getElementById('chatArea'); if(a) a.scrollTop=a.scrollHeight; }
+function ts() { return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
 function aiAv() {
   return `<div class="ai-av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17L12 4l7 13"/><path d="M8.5 12.5h7"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg></div>`;
 }
 
-// ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
 function mdToHtml(text) {
   if (!text) return '';
   let s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  s = s
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
-  const blocks = s.split(/\n\n+/);
-  return blocks.filter(b => b.trim()).map(block => {
+  s = s.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+       .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>');
+  return s.split(/\n\n+/).filter(b=>b.trim()).map(block => {
     const lines = block.trim().split('\n');
-    const allList = lines.every(l => /^[-*•] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
-    if (allList) {
-      const items = lines.filter(l => l.trim())
-        .map(l => `<li>${l.replace(/^[-*•] /, '').replace(/^\d+\. /, '')}</li>`)
-        .join('');
-      return `<ul style="padding-left:20px;margin:6px 0">${items}</ul>`;
+    const isList = lines.every(l => /^[-*•] /.test(l.trim()) || /^\d+\. /.test(l.trim()));
+    if (isList) {
+      return `<ul style="padding-left:20px;margin:6px 0">${lines.filter(l=>l.trim()).map(l=>`<li>${l.replace(/^[-*•] /,'').replace(/^\d+\. /,'')}</li>`).join('')}</ul>`;
     }
     return `<p>${lines.join('<br>')}</p>`;
   }).join('');
 }
 
-// ─── MAIN SUBMIT ──────────────────────────────────────────────────────────────
+function newConversation() {
+  history = [];
+  busy = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('thread').innerHTML = '';
+  document.getElementById('thread').style.display = 'none';
+  document.getElementById('landingScreen').style.display = '';
+  document.getElementById('newChatBtn').style.display = 'none';
+  const inp = document.getElementById('chatInput');
+  inp.value = ''; inp.style.height = 'auto';
+}
+
 async function submitQ() {
   if (busy) return;
   const inp = document.getElementById('chatInput');
   const q = inp.value.trim();
   if (!q) return;
   busy = true;
-  inp.value = '';
-  inp.style.height = 'auto';
+  inp.value = ''; inp.style.height = 'auto';
   document.getElementById('sendBtn').disabled = true;
   document.getElementById('landingScreen').style.display = 'none';
   const thr = document.getElementById('thread');
@@ -611,37 +592,33 @@ async function submitQ() {
   const ud = document.createElement('div');
   ud.className = 'msg msg-user';
   ud.innerHTML = `<div class="bub">${esc(q)}</div><span class="msg-ts">${ts()}</span>`;
-  thr.appendChild(ud);
-  scrollC();
+  thr.appendChild(ud); scrollC();
 
   const tkEl = document.createElement('div');
-  tkEl.className = 'msg msg-ai';
-  tkEl.id = 'tkEl';
+  tkEl.className = 'msg msg-ai'; tkEl.id = 'tkEl';
   tkEl.innerHTML = `<div class="ai-row">${aiAv()}<div class="ai-body">
-    <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')}</div>
-    <div class="thinking"><div class="tdots"><span></span><span></span><span></span></div>
-    <span>Thinking…</span></div></div></div>`;
-  thr.appendChild(tkEl);
-  scrollC();
+    <div class="ai-name">DVNC ${esc(curModel.split(' ')[1]||'Sovereign')}</div>
+    <div class="thinking"><div class="tdots"><span></span><span></span><span></span></div><span>Thinking…</span></div>
+  </div></div>`;
+  thr.appendChild(tkEl); scrollC();
 
   let apiData;
   try {
     const resp = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ query: q, history })
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     apiData = await resp.json();
   } catch (err) {
-    apiData = { type: 'simple', text: 'Network error — please check your connection and try again.' };
+    apiData = { type:'simple', text:'Network error — please check your connection and try again.' };
   }
 
-   const assistantText = apiData.type === 'deep'
-    ? (apiData.data && apiData.data.synthesis ? apiData.data.synthesis : '')
+  const assistantText = apiData.type==='deep'
+    ? ((apiData.data||apiData).synthesis || '')
     : (apiData.text || apiData.message || '');
-  history.push({ role: 'user', content: q });
-  history.push({ role: 'assistant', content: assistantText });
+  history.push({ role:'user', content:q });
+  history.push({ role:'assistant', content:assistantText });
 
   if (apiData.type === 'simple') {
     renderSimple(apiData.text || apiData.message || 'Something went wrong.');
@@ -650,7 +627,6 @@ async function submitQ() {
   }
 }
 
-// ─── SIMPLE RESPONSE ─────────────────────────────────────────────────────────
 function renderSimple(text) {
   const thr = document.getElementById('thread');
   const tkEl = document.getElementById('tkEl');
@@ -662,39 +638,30 @@ function renderSimple(text) {
     <span class="msg-ts" style="margin-top:4px">${ts()}</span>
   </div></div>`;
   if (tkEl) tkEl.replaceWith(msg); else thr.appendChild(msg);
+  document.getElementById('newChatBtn').style.display = 'grid';
   busy = false;
   document.getElementById('sendBtn').disabled = false;
   scrollC();
 }
 
-// ─── LENS TRACE ANIMATION ────────────────────────────────────────────────────
 async function runLensTrace(apiData) {
   const thr = document.getElementById('thread');
   const tkEl = document.getElementById('tkEl');
 
-  const trRows = LENS_TRACE.map((l, i) =>
-    `<div class="trace-step pend" id="trs${i}">
-      <div class="tn">${esc(l.num)}</div>
-      <div class="tt"><h5>${esc(l.name)}</h5><p id="trsp${i}">${esc(l.status)}</p></div>
-    </div>`
+  const chips = LENS_TRACE.map((l,i) =>
+    `<div class="lchip pend" id="chip${i}"><span class="cn">${l.num}</span><span>${l.name.replace('The ','')}</span></div>`
   ).join('');
 
   const traceEl = document.createElement('div');
-  traceEl.className = 'msg msg-ai';
-  traceEl.id = 'actEl';
+  traceEl.className = 'msg msg-ai'; traceEl.id = 'actEl';
   traceEl.innerHTML = `<div class="ai-row" style="width:100%">${aiAv()}
     <div class="ai-body" style="flex:1">
-      <div class="ai-name">DVNC ${esc(curModel.split(' ')[1] || 'Sovereign')} — Activating 10 Cognitive Lenses</div>
-      <div class="active-split" style="margin-top:8px">
-        <div style="padding-right:14px">
-          <div class="thinking">
-            <div class="tdots"><span></span><span></span><span></span></div>
-            <span id="actTxt">Activating 10 cognitive lenses…</span>
-          </div>
-        </div>
-        <div class="trace-panel">
-          <p class="trace-hdr">Cognitive Lens Activation</p>
-          ${trRows}
+      <div class="ai-name">DVNC ${esc(curModel.split(' ')[1]||'Sovereign')} — Running 10 Cognitive Lenses</div>
+      <div class="lchips-wrap">
+        <div class="lchips-row">${chips}</div>
+        <div class="chip-status">
+          <div class="tdots"><span></span><span></span><span></span></div>
+          <span id="actTxt">Initializing lenses…</span>
         </div>
       </div>
     </div></div>`;
@@ -704,250 +671,251 @@ async function runLensTrace(apiData) {
 
   const lenses = apiData.lenses || [];
   for (let i = 0; i < LENS_TRACE.length; i++) {
-    await delay(200 + i * 190);
-    const step = document.getElementById('trs' + i);
-    if (step) {
-      step.classList.remove('pend');
-      const sp = document.getElementById('trsp' + i);
-      if (sp && lenses[i] && lenses[i].contribution) {
-        const first = lenses[i].contribution.split(/[.!?]/)[0].trim();
-        sp.textContent = first ? first + '.' : lenses[i].contribution.substring(0, 80) + '…';
-      }
+    await delay(180 + i * 155);
+    if (i > 0) {
+      const prev = document.getElementById('chip'+(i-1));
+      if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
     }
+    const chip = document.getElementById('chip'+i);
+    if (chip) { chip.classList.remove('pend'); chip.classList.add('active'); }
     const tx = document.getElementById('actTxt');
-    if (tx && LENS_TRACE[i + 1]) tx.textContent = LENS_TRACE[i + 1].name + ' active…';
+    if (tx) {
+      const contrib = lenses[i] && lenses[i].contribution;
+      tx.textContent = contrib
+        ? (contrib.split(/[.!?]/)[0].trim().substring(0,72) + '…')
+        : (LENS_TRACE[i].name + ' analyzing…');
+    }
     scrollC();
   }
-
-  await delay(280);
+  const last = document.getElementById('chip'+(LENS_TRACE.length-1));
+  if (last) { last.classList.remove('active'); last.classList.add('done'); }
+  await delay(300);
   renderDeep(apiData);
 }
 
-// ─── DEEP RESPONSE ────────────────────────────────────────────────────────────
 function renderDeep(data) {
   const thr = document.getElementById('thread');
   const actEl = document.getElementById('actEl');
 
-  const graphSVG = buildDynamicGraph(data.graph && data.graph.nodes ? data.graph.nodes : [],
-                                      data.graph && data.graph.edges ? data.graph.edges : []);
-  const synthHTML  = mdToHtml(data.synthesis || '');
-  const lensesHTML = buildLensCards(data.lenses || []);
-  const metricsHTML = buildMetrics(data.metrics || {});
-  const expHTML    = buildExpOutline(data.experimental_outline || []);
+  const graphSVG = buildDynamicGraph(data.graph&&data.graph.nodes ? data.graph.nodes : [],
+                                      data.graph&&data.graph.edges ? data.graph.edges : []);
+  const lensGrid  = buildLensGrid(data.lenses || []);
+  const synthHTML = mdToHtml(data.synthesis || '');
+  const metHTML   = buildMetrics(data.metrics || {});
+  const expHTML   = buildExpOutline(data.experimental_outline || []);
 
   const msg = document.createElement('div');
   msg.className = 'msg msg-ai';
   msg.innerHTML = `<div class="ai-row" style="width:100%">${aiAv()}
     <div class="ai-body" style="flex:1">
       <div class="ai-name">${esc(curModel)} · <span style="color:var(--teal)">Discovery Complete</span></div>
-      <div class="rcard" style="margin-top:8px">
 
-        <div class="rsec">
-          <p class="eyebrow">Interdisciplinary Knowledge Graph</p>
-          <div class="sec-title" style="margin-bottom:12px">Discovery Connectome</div>
-          <div class="c-box">${graphSVG}</div>
-          <div class="c-legend">
-            <span><i class="ldot" style="background:#ff7a1a;border:1px solid #e06010"></i>Hypothesis</span>
-            <span><i class="ldot" style="background:#17b8a6;border:1px solid #0e9188"></i>Domain</span>
-            <span><i class="ldot" style="background:#b8d8ff;border:1px solid #5e8fe6"></i>Concept</span>
-            <span><i class="ldot" style="background:#e7defe;border:1px solid #8f73d9"></i>Analogy</span>
-          </div>
+      <div class="sec-card">
+        <span class="eyebrow">Interdisciplinary Knowledge Graph</span>
+        <div style="font-family:var(--font-d);font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:4px">Discovery Connectome</div>
+        <div class="c-box">${graphSVG}</div>
+        <div class="c-legend">
+          <span><i class="ldot" style="background:#ff7a1a;border:1px solid #c85000"></i>Hypothesis</span>
+          <span><i class="ldot" style="background:#17b8a6;border:1px solid #0d9489"></i>Domain</span>
+          <span><i class="ldot" style="background:#cce4ff;border:1px solid #4a7fcc"></i>Concept</span>
+          <span><i class="ldot" style="background:#e9d9ff;border:1px solid #7a57cc"></i>Analogy</span>
         </div>
-
-        <div class="rsec">
-          <p class="eyebrow">Leonardian Synthesis</p>
-          <div class="synthesis-wrap">
-            <div class="synth-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-              </svg>
-            </div>
-            <div class="synth-text">${synthHTML}</div>
-          </div>
-        </div>
-
-        <div class="rsec">
-          <p class="eyebrow">Discovery Metrics</p>
-          <div class="metrics-row">${metricsHTML}</div>
-        </div>
-
-        ${expHTML ? `<div class="rsec">
-          <p class="eyebrow">Experimental Outline</p>
-          <div class="exp-steps">${expHTML}</div>
-        </div>` : ''}
-
-        <div class="lens-section">
-          <button class="lens-toggle" onclick="toggleLenses(this)">
-            <span class="latarrow">▾</span>&nbsp;10 Cognitive Lenses — What each lens contributed
-          </button>
-          <div id="lensGrid" class="lens-grid" style="display:none">${lensesHTML}</div>
-        </div>
-
       </div>
-      <span class="msg-ts" style="margin-top:5px">${ts()}</span>
+
+      <div class="sec-card" style="margin-top:10px">
+        <div class="contrib-hdr">
+          <span class="eyebrow" style="margin:0">10 Cognitive Lens Contributions</span>
+          <span class="contrib-hint">Click ⓘ to see what each lens does in principle</span>
+        </div>
+        <div class="lc-grid">${lensGrid}</div>
+      </div>
+
+      <div class="innov-card">
+        <div class="innov-hdr">
+          <div class="innov-hdr-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="innov-title">Leonardian Synthesis</div>
+            <div class="innov-sub">Cross-disciplinary discovery informed by all 10 cognitive lenses</div>
+          </div>
+        </div>
+        <div class="innov-body"><div class="synth-text">${synthHTML}</div></div>
+        ${metHTML ? `<div class="innov-metrics">${metHTML}</div>` : ''}
+        ${expHTML ? `<div class="innov-exp"><span class="eyebrow">Experimental Outline</span><div class="exp-steps">${expHTML}</div></div>` : ''}
+      </div>
+
+      <span class="msg-ts" style="margin-top:6px">${ts()}</span>
     </div></div>`;
 
   if (actEl) actEl.replaceWith(msg); else thr.appendChild(msg);
+  document.getElementById('newChatBtn').style.display = 'grid';
   busy = false;
   document.getElementById('sendBtn').disabled = false;
   scrollC();
 }
 
-// ─── METRICS ─────────────────────────────────────────────────────────────────
+function buildLensGrid(lenses) {
+  if (!lenses.length) return '<p style="font-size:.83rem;color:var(--muted);grid-column:1/-1;padding:8px 0">Lens data unavailable.</p>';
+  return lenses.map(l => {
+    const info = LENS_INFO[l.id] || '';
+    return `<div class="lc-card" id="lccard${l.id}">
+      <div class="lc-head">
+        <div class="lc-num">${String(l.id||'').padStart(2,'0')}</div>
+        <span class="lc-name">${esc(l.name||'')}</span>
+        ${info ? `<button class="lc-ibtn" onclick="toggleLcAbout(${l.id})">ⓘ</button>` : ''}
+      </div>
+      ${info ? `<div class="lc-about" id="lcabout${l.id}">${esc(info)}</div>` : ''}
+      <div class="lc-contrib">${esc(l.contribution||'')}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleLcAbout(id) {
+  const c = document.getElementById('lccard'+id);
+  if (c) c.classList.toggle('aopen');
+}
+
 function buildMetrics(m) {
-  const entries = [
+  return [
     { val: m.interdisciplinary_score || m.cross_domain_distance, lbl: 'Interdisciplinary' },
-    { val: m.novelty_index          || m.novelty,                lbl: 'Novelty' },
-    { val: m.synthesis_depth        || m.mechanistic_clarity,    lbl: 'Depth' },
-    { val: m.practical_applicability|| m.tractability,           lbl: 'Applicability' },
-  ];
-  return entries.map(i => `<div class="mpill">
+    { val: m.novelty_index           || m.novelty,               lbl: 'Novelty' },
+    { val: m.synthesis_depth         || m.mechanistic_clarity,   lbl: 'Depth' },
+    { val: m.practical_applicability || m.tractability,          lbl: 'Applicability' },
+  ].map(i => `<div class="mpill">
     <span class="mval">${i.val != null ? esc(String(i.val)) : '—'}</span>
     <span class="mlbl">${esc(i.lbl)}</span>
   </div>`).join('');
 }
 
-// ─── EXPERIMENTAL OUTLINE ─────────────────────────────────────────────────────
 function buildExpOutline(steps) {
   if (!steps || steps.length === 0) return '';
-  if (typeof steps === 'string') {
-    return `<div class="exp-step"><div class="exp-copy"><p>${esc(steps)}</p></div></div>`;
-  }
+  if (typeof steps === 'string') return `<div class="exp-step"><div class="exp-copy"><p>${esc(steps)}</p></div></div>`;
   return steps.map(s => `<div class="exp-step">
-    <div class="exp-num">${esc(String(s.step || ''))}</div>
-    <div class="exp-copy">
-      <h5>${esc(s.title || '')}</h5>
-      <p>${esc(s.detail || '')}</p>
-    </div>
+    <div class="exp-num">${esc(String(s.step||''))}</div>
+    <div class="exp-copy"><h5>${esc(s.title||'')}</h5><p>${esc(s.detail||'')}</p></div>
   </div>`).join('');
 }
 
-// ─── LENS ACCORDION ───────────────────────────────────────────────────────────
-function buildLensCards(lenses) {
-  if (!lenses.length) return '<p style="font-size:.83rem;color:var(--muted);padding:8px 0;grid-column:1/-1">Lens data unavailable.</p>';
-  return lenses.map(l => {
-    const contrib = l.contribution || '';
-    const preview = contrib.length > 60 ? contrib.substring(0, 58) + '…' : contrib;
-    return `<div class="lens-card" id="lc${l.id}">
-      <div class="lens-header" onclick="toggleLens(${l.id})">
-        <div class="lens-num">${String(l.id || '').padStart(2, '0')}</div>
-        <div class="lens-title-col">
-          <span class="lens-name">${esc(l.name || '')}</span>
-          <span class="lens-preview">${esc(preview)}</span>
-        </div>
-        <span class="lens-chev">▾</span>
-      </div>
-      <div class="lens-body">${esc(contrib)}</div>
-    </div>`;
-  }).join('');
-}
-
-function toggleLens(id) {
-  const card = document.getElementById('lc' + id);
-  if (card) card.classList.toggle('open');
-}
-
-function toggleLenses(btn) {
-  const g = document.getElementById('lensGrid');
-  const a = btn.querySelector('.latarrow');
-  const isOpen = g.style.display === 'grid';
-  g.style.display = isOpen ? 'none' : 'grid';
-  if (a) a.textContent = isOpen ? '▾' : '▴';
-  setTimeout(() => scrollC(), 50);
-}
-
-// ─── DYNAMIC KNOWLEDGE GRAPH ──────────────────────────────────────────────────
-function buildDynamicGraph(nodes, edges) {
-  if (!nodes || nodes.length === 0) {
-    return `<svg viewBox="0 0 760 160" style="width:100%;height:100px">
-      <text x="380" y="85" text-anchor="middle" font-family="Instrument Sans,sans-serif"
-        font-size="13" fill="#5a5f7a">Graph data not available for this response.</text>
-    </svg>`;
+function buildDynamicGraph(rawNodes, rawEdges) {
+  if (!rawNodes || rawNodes.length === 0) {
+    return `<svg viewBox="0 0 760 100" style="width:100%;height:70px"><text x="380" y="55" text-anchor="middle" font-family="Instrument Sans,sans-serif" font-size="12" fill="#5a5f7a">Graph data unavailable.</text></svg>`;
   }
 
-  const svgW = 900, svgH = 440;
-  const cx = 450, cy = 220;
-  const ringR = { hypothesis: 0, domain: 92, concept: 168, analogy: 232 };
+  // Deduplicate nodes by label
+  const seenL = new Set();
+  const nodes = rawNodes.filter(n => {
+    const k = (n.label||'').toLowerCase().trim();
+    if (seenL.has(k)) return false;
+    seenL.add(k); return true;
+  });
+  const validIds = new Set(nodes.map(n => n.id));
+  const edges = (rawEdges||[]).filter(e => validIds.has(e.from) && validIds.has(e.to) && e.from !== e.to);
 
-  const byType = {};
-  nodes.forEach(n => {
-    const t = n.type || 'concept';
-    if (!byType[t]) byType[t] = [];
-    byType[t].push(n);
+  const W = 840, H = 360, N = nodes.length;
+  const hypI = nodes.findIndex(n => n.type === 'hypothesis');
+
+  // Initialize positions: hypothesis at center, others in circle
+  const pos = nodes.map((n, i) => {
+    if (n.type === 'hypothesis') return { x: W/2, y: H/2 };
+    const angle = (2*Math.PI * i / N) - Math.PI/2;
+    const r = Math.min(W,H) * 0.31;
+    return { x: W/2 + r*Math.cos(angle), y: H/2 + r*Math.sin(angle) };
   });
 
-  if (!byType.hypothesis && nodes.length > 0) {
-    byType.hypothesis = [nodes[0]];
-    byType.concept = (byType.concept || []).concat(nodes.slice(1));
-  }
+  const idxMap = {};
+  nodes.forEach((n,i) => idxMap[n.id] = i);
 
-  const positioned = [];
-  Object.entries(byType).forEach(([type, tNodes]) => {
-    const r = ringR[type] !== undefined ? ringR[type] : 168;
-    tNodes.forEach((node, i) => {
-      const angle = r === 0 ? -Math.PI / 2 : (2 * Math.PI * i / tNodes.length) - Math.PI / 2;
-      positioned.push({ ...node, px: cx + r * Math.cos(angle), py: cy + r * Math.sin(angle) });
+  // Fruchterman-Reingold layout
+  const k = Math.sqrt(W * H / N) * 0.82;
+  for (let it = 0; it < 160; it++) {
+    const cool = Math.max(0.05, 1 - it/160);
+    const disp = nodes.map(() => ({ x:0, y:0 }));
+
+    for (let i = 0; i < N; i++) {
+      for (let j = i+1; j < N; j++) {
+        const dx = (pos[i].x - pos[j].x) || 0.1;
+        const dy = (pos[i].y - pos[j].y) || 0.1;
+        const d = Math.sqrt(dx*dx+dy*dy) || 0.1;
+        const f = k*k / d;
+        disp[i].x += dx/d*f; disp[i].y += dy/d*f;
+        disp[j].x -= dx/d*f; disp[j].y -= dy/d*f;
+      }
+    }
+
+    edges.forEach(e => {
+      const a = idxMap[e.from], b = idxMap[e.to];
+      if (a==null||b==null) return;
+      const dx = (pos[b].x-pos[a].x)||0.1;
+      const dy = (pos[b].y-pos[a].y)||0.1;
+      const d = Math.sqrt(dx*dx+dy*dy)||0.1;
+      const f = d*d/k * 0.45;
+      disp[a].x += dx/d*f; disp[a].y += dy/d*f;
+      disp[b].x -= dx/d*f; disp[b].y -= dy/d*f;
     });
-  });
 
-  const nodeMap = {};
-  positioned.forEach(n => { nodeMap[n.id] = n; });
+    const maxD = 28*cool;
+    for (let i = 0; i < N; i++) {
+      if (i===hypI && it>15) continue;
+      const d = Math.sqrt(disp[i].x*disp[i].x+disp[i].y*disp[i].y)||1;
+      const sc = Math.min(maxD,d)/d;
+      pos[i].x = Math.max(60, Math.min(W-60, pos[i].x + disp[i].x*sc));
+      pos[i].y = Math.max(34, Math.min(H-34, pos[i].y + disp[i].y*sc));
+    }
+    if (it < 80) {
+      for (let i = 0; i < N; i++) {
+        if (i===hypI) continue;
+        pos[i].x += (W/2-pos[i].x)*0.007;
+        pos[i].y += (H/2-pos[i].y)*0.007;
+      }
+    }
+  }
 
-  const typeStyle = {
-    hypothesis: { fill: '#ff7a1a', stroke: '#e06010', textFill: '#0f1230', r: 20 },
-    domain:     { fill: '#17b8a6', stroke: '#0e9188', textFill: '#0f1230', r: 14 },
-    concept:    { fill: '#b8d8ff', stroke: '#5e8fe6', textFill: '#3a4180', r: 12 },
-    analogy:    { fill: '#e7defe', stroke: '#8f73d9', textFill: '#4a3880', r: 12 },
+  const ts_ = {
+    hypothesis: { fill:'#ff7a1a', stroke:'#c85000', r:21, tf:'#0f1230' },
+    domain:     { fill:'#17b8a6', stroke:'#0d9489', r:15, tf:'#083830' },
+    concept:    { fill:'#cce4ff', stroke:'#4a7fcc', r:12, tf:'#1a3060' },
+    analogy:    { fill:'#e9d9ff', stroke:'#7a57cc', r:12, tf:'#2e1466' },
   };
 
-  let edgeSVG = '';
-  (edges || []).forEach(e => {
-    const a = nodeMap[e.from], b = nodeMap[e.to];
-    if (!a || !b) return;
-    edgeSVG += `<line x1="${a.px.toFixed(1)}" y1="${a.py.toFixed(1)}"
-      x2="${b.px.toFixed(1)}" y2="${b.py.toFixed(1)}"
-      stroke="rgba(26,31,78,.14)" stroke-width="1.6"/>`;
+  const pmap = {};
+  nodes.forEach((n,i) => pmap[n.id] = { ...n, px:pos[i].x, py:pos[i].y });
+
+  let svg = '';
+
+  edges.forEach(e => {
+    const a=pmap[e.from], b=pmap[e.to];
+    if (!a||!b) return;
+    svg += `<line x1="${a.px.toFixed(1)}" y1="${a.py.toFixed(1)}" x2="${b.px.toFixed(1)}" y2="${b.py.toFixed(1)}" stroke="rgba(26,31,78,.13)" stroke-width="1.4"/>`;
   });
 
-  let nodeSVG = '';
-  positioned.forEach(n => {
-    const st = typeStyle[n.type] || typeStyle.concept;
-    const isHyp = n.type === 'hypothesis';
-    if (isHyp) {
-      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="36"
-        fill="none" stroke="rgba(255,122,26,.09)" stroke-width="14"/>`;
-      nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="27"
-        fill="none" stroke="rgba(255,122,26,.07)" stroke-width="9"/>`;
+  Object.values(pmap).forEach(n => {
+    const st = ts_[n.type] || ts_.concept;
+    const isH = n.type==='hypothesis';
+    if (isH) {
+      svg += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="${st.r+15}" fill="none" stroke="rgba(255,122,26,.08)" stroke-width="11"/>`;
+      svg += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="${st.r+7}" fill="none" stroke="rgba(255,122,26,.06)" stroke-width="6"/>`;
     }
-    nodeSVG += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}"
-      r="${st.r}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="2"/>`;
+    svg += `<circle cx="${n.px.toFixed(1)}" cy="${n.py.toFixed(1)}" r="${st.r}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.8"/>`;
 
-    const dx = n.px - cx, dy = n.py - cy;
-    const off = st.r + 9;
-    let lx, ly, anchor;
-    if (Math.abs(dx) >= Math.abs(dy) * 0.55) {
-      lx = n.px + (dx >= 0 ? off : -off);
-      ly = n.py + 4;
-      anchor = dx >= 0 ? 'start' : 'end';
-    } else {
-      lx = n.px;
-      ly = n.py + (dy >= 0 ? off + 10 : -(off + 2));
-      anchor = 'middle';
-    }
-    const label = (n.label || '').length > 22 ? n.label.substring(0, 20) + '…' : (n.label || '');
-    nodeSVG += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}"
-      fill="${st.textFill}" font-size="${isHyp ? 13 : 11.5}"
-      font-weight="${isHyp ? '700' : '500'}"
-      font-family="Instrument Sans,sans-serif">${esc(label)}</text>`;
+    const lbl = (n.label||'').length>20 ? (n.label||'').slice(0,18)+'…' : (n.label||'');
+    const fw = isH ? '700' : '500';
+    const fs = isH ? 11 : 10;
+    const estW = Math.max(lbl.length*(isH?6.1:5.3)+12, 36);
+    const yB = n.py + st.r + 5;
+    const yA = n.py - st.r - 18;
+    const ly = (yB+16 > H-4) ? yA : yB;
+
+    svg += `<rect x="${(n.px-estW/2).toFixed(1)}" y="${(ly-12).toFixed(1)}" width="${estW.toFixed(1)}" height="15" rx="3" fill="rgba(248,247,244,.94)"/>`;
+    svg += `<text x="${n.px.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${st.tf}" font-size="${fs}" font-weight="${fw}" font-family="Instrument Sans,sans-serif">${esc(lbl)}</text>`;
   });
 
-  return `<svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%;height:320px">
-    ${edgeSVG}${nodeSVG}
-  </svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:260px">${svg}</svg>`;
 }
 
-// ─── GRAPH TAB CHECKBOXES ─────────────────────────────────────────────────────
-document.querySelectorAll('.cchk').forEach(c => c.addEventListener('click', () => c.classList.toggle('on')));
+document.querySelectorAll('.cchk').forEach(c => c.addEventListener('click', ()=>c.classList.toggle('on')));
 </script>
 </body>
 </html>
