@@ -699,7 +699,13 @@ function renderDeep(data) {
   const graphSVG = buildDynamicGraph(data.graph&&data.graph.nodes ? data.graph.nodes : [],
                                       data.graph&&data.graph.edges ? data.graph.edges : []);
   const lensGrid  = buildLensGrid(data.lenses || []);
-  const synthHTML = mdToHtml(data.synthesis || '');
+  let synthRaw = data.synthesis || '';
+if (typeof synthRaw !== 'string') synthRaw = String(synthRaw);
+// If it looks like the whole JSON was dumped into synthesis, show a fallback
+if (synthRaw.trim().startsWith('{') && synthRaw.includes('"lenses"')) {
+  synthRaw = 'Synthesis unavailable — please try again.';
+}
+const synthHTML = mdToHtml(synthRaw);
   const metHTML   = buildMetrics(data.metrics || {});
   const expHTML   = buildExpOutline(data.experimental_outline || []);
 
